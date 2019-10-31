@@ -1,0 +1,22 @@
+chr p_enter = ""
+	puŝu "Enter" pro ŝalti planedojn""
+
+chr Sun = Solo
+chr Mercury = Mercury
+chr Venus = Venus
+chr Earth = Terro
+chr Moon = Luno
+chr Mars = Mars
+chr Phobos = Phobos
+chr Deimos = Deimos
+chr Ceres = Ceres
+chr Jupiter = Jupiter
+chr IO = IO
+chr Europa = Europa
+chr Ganemyde = Ganemyde	// ?
+chr Callisto = Callisto
+chr Seturn = Saturn
+chr Titan = Titan
+chr Uranus = Uranus
+chr Neptune = Neptune
+chr Pluto = Pluto

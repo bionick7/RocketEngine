@@ -1,0 +1,29 @@
+>Graphics
+	vc3 Background_color = 0.05; 0.1; 0.02
+	vc3 Draw_color = 0; 1; 0
+	int Line_thickness = 3
+	
+	int Screen_width = 800
+	int Screen_height = 600
+<
+
+>Audio
+	f64 Master_volume = 1.0
+<
+
+>UI
+	chr Language = English // Placeholding
+	
+	dat*3-translations = 
+		translations/none.cfgt
+		translations/english.cfgt
+		translations/esperanto.cfgt
+<
+
+>Controls
+	f64 Mouse_sensitivity = 1
+	f64 Initial_fov = 90
+	f64 Max_vertical_angle = 89.9
+	f64 Min_vertical_angle = -89.9
+	f64 Scroll_sensitivity = 1
+<

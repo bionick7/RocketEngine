@@ -1,0 +1,13 @@
+>child
+	chr tst_string = yeees
+	int tst\_integer = 0
+	chr multi_line = ""
+		-Hello there
+		- ???
+	""
+	vc3 vector = 8; -3.25; 19.8e2
+	f64 big = -1.575e10
+	f64 small = 13e-5
+	int hex = x35f6ec
+	bit boolean = 1
+<

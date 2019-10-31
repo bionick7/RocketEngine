@@ -1,0 +1,305 @@
+>Sun
+	int no_parent = 1
+
+	f64 Ecc = 0
+	f64 SMA = 0
+	f64 Inc = 0
+	f64 LoA = 0
+	f64 AoP = 0
+	f64 Ann = 0
+	
+	f64 radius = 695 500 000
+	f64 mass = 1 988 470 000 000 000 000 000 000 000 000
+
+	int pos = 0
+
+	>Mercury
+		f64 Ecc = 0.20564
+		f64 SMA = 58 065 000 000
+		f64 Inc = 7
+		f64 LoA = 0.8376
+		f64 AoP = 0.508
+		f64 Ann = 0.0
+		
+		f64 radius = 2 439 400
+		f64 mass = 330 114 000 000 000 000 000 000
+		
+		int pos = 10
+	<
+	
+	>Venus
+		f64 Ecc = 0.00678
+		f64 SMA = 108 500 000 000
+		f64 Inc = 3.39
+		f64 LoA = 1.338
+		f64 AoP = 0.958
+		f64 Ann = 0.0
+		
+		f64 radius = 6 051 800
+		f64 mass = 4 867 470 000 000 000 000 000 000
+		
+		int pos = 20
+	<
+	
+	>Earth
+		f64 Ecc = 0.01671
+		f64 SMA = 150 000 000 000
+		f64 Inc = 0.0
+		f64 LoA = 0.0
+		f64 AoP = 0.0
+		f64 Ann = 0.0
+		
+		f64 radius = 6 371 000
+		f64 mass = 5 972 370 000 000 000 000 000 000
+		
+		int pos = 30
+		
+		>Moon
+			f64 Ecc = 0.0
+			f64 SMA = 384 000 000
+			f64 Inc = 0.0
+			f64 LoA = 0.0
+			f64 AoP = 0.0
+			f64 Ann = 0.0
+			
+			f64 radius = 1 800 000
+			f64 mass = 73 420 000 000 000 000 000 000
+			
+			int pos = 40
+		<
+	<
+	
+	>Mars
+		f64 Ecc = 0.09339
+		f64 SMA = 228 557 000 000
+		f64 Inc = 1.85
+		f64 LoA = 0.864
+		f64 AoP = -1.28
+		f64 Ann = 0.0
+		
+		f64 radius = 3 389 500
+		f64 mass = 641 712 000 000 000 000 000 000
+		
+		int pos = 50
+		
+		>Phobos
+			f64 Ecc = 0.2
+			f64 SMA = 9 377 200
+			f64 Inc = 10
+			f64 LoA = 0.0
+			f64 AoP = 0.0
+			f64 Ann = 0.0
+				
+			f64 radius = 11 100
+			f64 mass = 10 800 000 000 000 000
+			
+			int pos = 60
+		<
+		
+		>Deimos
+			f64 Ecc = 0.2
+			f64 SMA = 23 463 200
+			f64 Inc = 10
+			f64 LoA = 0.0
+			f64 AoP = 0.0
+			f64 Ann = 0.0
+				
+			f64 radius = 6 200
+			f64 mass = 1 800 000 000 000 000
+			
+			int pos = 70
+		<
+	<
+	
+	>Ceres
+		f64 Ecc = 0.078
+		f64 SMA = 414 870 000 000
+		f64 Inc = 10
+		f64 LoA = 0.0
+		f64 AoP = 0.0
+		f64 Ann = 0.0
+		
+		f64 radius = 2 000 000
+		f64 mass = 0
+		
+		int pos = 80
+	<
+	
+	>Jupiter
+		f64 Ecc = 0.0484
+		f64 SMA = 780 435 000 000
+		f64 Inc = 1.30
+		f64 LoA = 1.754
+		f64 AoP = 0.0
+		f64 Ann = 0.0
+		
+		f64 radius = 69 911 000
+		f64 mass = 1868 187 000 000 000 000 000 000 000
+		
+		int pos = 90
+		
+		>IO
+			f64 Ecc = 0.2
+			f64 SMA = 60 000 000 000
+			f64 Inc = 10
+			f64 LoA = 0.0
+			f64 AoP = 0.0
+			f64 Ann = 0.0
+			
+			f64 radius = 1 821 000
+			f64 mass = 0
+			
+			int pos = 100
+		<
+		>Europa
+			f64 Ecc = 0.2
+			f64 SMA = 60 000 000 000
+			f64 Inc = 10
+			f64 LoA = 0.0
+			f64 AoP = 0.0
+			f64 Ann = 0.0
+			
+			f64 radius = 1 560 000
+			f64 mass = 0
+			
+			int pos = 110
+		<
+		
+		>Ganemyde
+			f64 Ecc = 0.2
+			f64 SMA = 60 000 000 000
+			f64 Inc = 10
+			f64 LoA = 0.0
+			f64 AoP = 0.0
+			f64 Ann = 0.0
+			
+			f64 radius = 2 631 000
+			f64 mass = 0
+			
+			int pos = 120
+		<
+		
+		>Callisto
+			f64 Ecc = 0.2
+			f64 SMA = 60 000 000 000
+			f64 Inc = 10
+			f64 LoA = 0.0
+			f64 AoP = 0.0
+			f64 Ann = 0.0
+			
+			f64 radius = 2 410 000
+			f64 mass = 0
+			
+			int pos = 130
+		<
+	<
+	
+	>Saturn
+		f64 Ecc = 0.0539
+		f64 SMA = 1 430 550 000 000
+		f64 Inc = 2.49
+		f64 LoA = 1.9836
+		f64 AoP = 0.0
+		f64 Ann = 0.0
+		
+		f64 radius = 58 232 000
+		f64 mass = 568 336 000 000 000 000 000 000 000
+			
+		int pos = 140
+		
+		>Encelladus
+			f64 Ecc = 0.2
+			f64 SMA = 60 000 000 000
+			f64 Inc = 10
+			f64 LoA = 0.0
+			f64 AoP = 0.0
+			f64 Ann = 0.0
+			
+			f64 radius = 252 000
+			f64 mass = 0
+			
+			int pos = 150
+		<
+		>Tethys
+			f64 Ecc = 0.2
+			f64 SMA = 60 000 000 000
+			f64 Inc = 10
+			f64 LoA = 0.0
+			f64 AoP = 0.0
+			f64 Ann = 0.0
+			
+			f64 radius = 533 000
+			f64 mass = 0
+			
+			int pos = 160
+		<
+		>Rhea
+			f64 Ecc = 0.2
+			f64 SMA = 60 000 000 000
+			f64 Inc = 10
+			f64 LoA = 0.0
+			f64 AoP = 0.0
+			f64 Ann = 0.0
+			
+			f64 radius = 764 000
+			f64 mass = 0
+			
+			int pos = 170
+		<
+		>Titan
+			f64 Ecc = 0.2
+			f64 SMA = 60 000 000 000
+			f64 Inc = 10
+			f64 LoA = 0.0
+			f64 AoP = 0.0
+			f64 Ann = 0.0
+			
+			f64 radius = 2 574 000
+			f64 mass = 0
+			
+			int pos = 180
+		<
+	<
+	
+	>Uranus
+		f64 Ecc = 0.04726
+		f64 SMA = 2 878 350 000 000
+		f64 Inc = 0.77
+		f64 LoA = 1.291
+		f64 AoP = 0.0
+		f64 Ann = 0.0
+		
+		f64 radius = 25 362 000
+		f64 mass = 86 812 700 000 000 000 000 000 000
+			
+		int pos = 190
+	<
+	
+	>Neptune
+		f64 Ecc = 0.00859
+		f64 SMA = 4 510 500 000 000
+		f64 Inc = 1.77
+		f64 LoA = 2.3
+		f64 AoP = 0.0
+		f64 Ann = 0.0
+		
+		f64 radius = 24 622 000
+		f64 mass = 102 412 600 000 000 000 000 000 000
+			
+		int pos = 200
+	<
+	
+	>Pluto
+		f64 Ecc = 0.24883 
+		f64 SMA = 5 922 315 000 000
+		f64 Inc = 17.14
+		f64 LoA = 1.925
+		f64 AoP = 0.0
+		f64 Ann = 0.0
+		
+		f64 radius = 1 188 300
+		f64 mass = 13 030 000 000 000 000 000 000
+			
+		int pos = 210
+	<
+<

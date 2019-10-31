@@ -1,0 +1,26 @@
+>Shaders
+	>Circle
+		chr vertex_path = \P \</shaders/CircleVert.vshad
+		chr fragment_path = \P \</shaders/CircleFrag.fshad
+		chr name = Circle
+	<
+	>BasicShader
+		chr vertex_path = \P \</shaders/SimpleVert.vshad
+		chr fragment_path = \P \</shaders/SimpleFrag.fshad
+		chr name = Simple
+	<
+	
+// Build-in and required
+	>Text
+		chr vertex_path = \P \</shaders/TextVertex.vshad
+		chr fragment_path = \P \</shaders/TextFragment.fshad
+		chr name = *Text
+	<
+<
+
+>Fonts
+	>Default
+		chr image_path = \P \</fonts/def.dds
+		chr name = Default
+	<
+<

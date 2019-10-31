@@ -1,0 +1,22 @@
+chr p_enter = ""
+	Press enter to switch Celestials""
+
+chr Sun = Sun
+chr Mercury = Mercury
+chr Venus = Venus
+chr Earth = Earth
+chr Moon = Moon
+chr Mars = Mars
+chr Phobos = Phobos
+chr Deimos = Deimos
+chr Ceres = Ceres
+chr Jupiter = Jupiter
+chr IO = IO
+chr Europa = Europa
+chr Ganemyde = Ganemyde	// ?
+chr Callisto = Callisto
+chr Seturn = Saturn
+chr Titan = Titan
+chr Uranus = Uranus
+chr Neptune = Neptune
+chr Pluto = Pluto

@@ -1,0 +1,22 @@
+#version 330 core
+
+// Input vertex data, different for all executions of this shader.
+layout(location = 0) in vec2 vertexPosition_screenspace;
+layout(location = 1) in vec2 vertexUV;
+
+uniform uvec2 ScreenSizeHlf;
+
+// Output data ; will be interpolated for each fragment.
+out vec2 UV;
+
+void main(){
+
+	// Output position of the vertex, in clip space
+	vec2 vertexPosition_homoneneousspace = vertexPosition_screenspace - ScreenSizeHlf;
+	vertexPosition_homoneneousspace /= ScreenSizeHlf;
+	gl_Position =  vec4(vertexPosition_homoneneousspace,0,1);
+	
+	// UV of the vertex. No special space for this one.
+	UV = vertexUV;
+}
+

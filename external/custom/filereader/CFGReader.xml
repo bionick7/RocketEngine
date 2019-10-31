@@ -1,0 +1,405 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CFGReader</name>
+    </assembly>
+    <members>
+        <member name="T:CFGReader.DataStructure">
+            <summary> Means to store data </summary>
+        </member>
+        <member name="F:CFGReader.DataStructure.extension">
+            <summary> The standart file extension  </summary>
+        </member>
+        <member name="F:CFGReader.DataStructure.Empty">
+            <summary> An empty data structure, for reference </summary>
+        </member>
+        <member name="P:CFGReader.DataStructure.Name">
+            <see cref="P:CFGReader.IDataStructure.Name"/>
+        </member>
+        <member name="P:CFGReader.DataStructure.Item(System.String)">
+            <summary> indexer by name </summary>
+        </member>
+        <member name="P:CFGReader.DataStructure.AllChildren">
+            <summary> Returns all children </summary>
+        </member>
+        <member name="P:CFGReader.DataStructure.Parent">
+            <see cref="P:CFGReader.IDataStructure.Parent"/>
+        </member>
+        <member name="P:CFGReader.DataStructure.RecursionDepth">
+            <see cref="P:CFGReader.IDataStructure.RecursionDepth"/>
+        </member>
+        <member name="F:CFGReader.DataStructure.children">
+            <summary> New DataStructures can be saved in a DataStructure, allowing for a recursive parents-children systrem. </summary>
+        </member>
+        <member name="M:CFGReader.DataStructure.#ctor(System.String,CFGReader.DataStructure)">
+            <see cref="M:CFGReader.IReader.CreateNewDataStructure(System.String,CFGReader.DataStructure)"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.#ctor">
+            <summary> Default constructor  </summary>
+        </member>
+        <member name="M:CFGReader.DataStructure.AnalyzeText(System.String[],System.String,System.String,CFGReader.DataStructure)">
+             <summary>
+            		This creates a DataStructure from a textfile. These files have a specific syntax: 
+            		New children are indicated with a ">" followed by the child's name.
+            		Items inside of the children are then specified with a prefix, followed by their name, an "=" sign and
+            		finally their value.
+            		If an array shall be specified, the prexix is expended with a "*" and the length of the array, and the "=" is followed by
+            		more items separated by a newline
+            		This could look like this:
+             </summary>
+             <param name="txt_lines"> text_lines from which to read </param>
+             <param name="name"> name of the DS </param>
+             <param name="file_name"> name of the file </param>
+             <param name="parent"> the initial parent of the DS</param>
+             <returns> a new datastructure </returns>
+             
+             <example>
+            		---------------------------------------
+            		 0
+            		 1		&lt;child1
+            		 2			int integer_item = 5
+            		 3			bit*8-byte = 
+            		 4				0
+            		 5				1
+            		 6				1
+            		 7				1
+            		 8				0
+            		 9				0
+            		10				1
+            		11				0
+            		12		&gt;
+            		13
+            		14		&lt;child2
+            		15			chr string = Hello_World
+            		16			rot*2-rotations = 
+            		17				0, 0, 90
+            		18			 -270, 90, 3
+            		19		&gt;
+            		20
+            		----------------------------------------				(Line numbers don't have to be specified)
+             </example>
+             
+             <remark>
+            		The prefixes are the following:
+            
+            			int -> integer
+            			snt -> short integer (unsigned)
+            			f32 -> 32-bit float
+            			f64 -> 64-bit float
+            			vc3 -> 3D vector (comma seperated)
+            			chr -> string (spaces, will be removed)
+            			bit -> booleans (0 for false or 1 for true)
+             </remark>
+        </member>
+        <member name="M:CFGReader.DataStructure.Load(System.String,System.String,CFGReader.DataStructure,System.Boolean)">
+            <see cref="M:CFGReader.IReader.LoadDataStructure(System.String,System.String,CFGReader.DataStructure,System.Boolean)"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.LoadFromDir(System.String,System.String,CFGReader.DataStructure)">
+            <see cref="M:CFGReader.IReader.LoadDataStructureFromDir(System.String,System.String,CFGReader.DataStructure)"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.Save(System.String,System.Boolean)">
+            <see cref="M:CFGReader.IDataStructure.Save(System.String,System.Boolean)"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.GetRawText">
+            <see cref="M:CFGReader.IDataStructure.GetRawText"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.Get``1(System.String,``0,System.Boolean,System.Boolean)">
+            <see cref="M:CFGReader.IDataStructure.Get``1(System.String,``0,System.Boolean,System.Boolean)"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.Get(System.String,System.Byte,System.Object,System.Boolean,System.Boolean)">
+            <see cref="M:CFGReader.IDataStructure.Get(System.String,System.Byte,System.Object,System.Boolean,System.Boolean)"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.Set``1(System.String,``0)">
+            <see cref="M:CFGReader.IDataStructure.Set``1(System.String,``0)"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.Contains``1(System.String)">
+            <see cref="M:CFGReader.IDataStructure.Contains``1(System.String)"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.Contains(System.String,System.Byte)">
+            <see cref="M:CFGReader.IDataStructure.Contains(System.String,System.Byte)"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.GetChild(System.String)">
+            <see cref="M:CFGReader.IDataStructure.GetChild(System.String)"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.GetAllChildren(System.String[])">
+            <see cref="M:CFGReader.IDataStructure.GetAllChildren(System.String[])"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.ContainsChild(System.String)">
+            <see cref="M:CFGReader.IDataStructure.ContainsChild(System.String)"/>
+        </member>
+        <member name="M:CFGReader.DataStructure.Throw(System.String,System.String,System.Int32)">
+            <summary> Throws an error  </summary>
+            <param name="message"> The error message </param>
+            <param name="file"> The file in which the error occurs </param>
+            <param name="line"> The line number of the error </param>
+        </member>
+        <member name="M:CFGReader.DataStructure.ToString">
+            <summary> Nicely formats the content of the datastructure into a string  </summary>
+        </member>
+        <member name="M:CFGReader.DataStructure.op_Addition(CFGReader.DataStructure,CFGReader.DataStructure)">
+            <summary> Combines 2 datastructures into one  </summary>
+        </member>
+        <member name="T:CFGReader.IDataStructure">
+            <summary> interface referring to the datastructure </summary>
+        </member>
+        <member name="P:CFGReader.IDataStructure.Name">
+            <summary> The name of the DataStructure </summary>
+        </member>
+        <member name="P:CFGReader.IDataStructure.AllChildren">
+            <summary> Returns all children </summary>
+        </member>
+        <member name="P:CFGReader.IDataStructure.Parent">
+            <summary> The parent Datastructure </summary>
+        </member>
+        <member name="P:CFGReader.IDataStructure.RecursionDepth">
+            <summary> The recursion depht (how deep in the parent-child hierarcy it is) </summary>
+        </member>
+        <member name="M:CFGReader.IDataStructure.Save(System.String,System.Boolean)">
+            <summary> Saves a datastructure as a file </summary>
+             <param name="path"> The file name and directory </param>
+            <param name="is_general"> If the filepath is a full filepath (true), or just the path inside the configs </param>
+            <returns> True if saved sucessfully </returns>
+        </member>
+        <member name="M:CFGReader.IDataStructure.GetRawText">
+            <summary> Returns the text, it would write into a file </summary>
+        </member>
+        <member name="M:CFGReader.IDataStructure.Get``1(System.String,``0,System.Boolean,System.Boolean)">
+            <summary> Get a value from the datastructure </summary>
+            <typeparam name="T"> The type of the field </typeparam>
+            <param name="name"> The name of the field </param>
+            <param name="def"> The default object, if nothing is found. null pointer by default </param>
+            <param name="test"> If this is enabled, it throws an error on keynotfounbd false on default </param>
+            <param name="quiet"> If this is enabled, it doesn't mention at all if a key isn't found. false by default </param>		
+        </member>
+        <member name="M:CFGReader.IDataStructure.Get(System.String,System.Byte,System.Object,System.Boolean,System.Boolean)">
+            <summary> Get a value from the datastructure </summary>
+            <param name="name"> The name of the field </param>
+            <param name="type"> The type of the field </param>
+            <param name="def"> The default object, if nothing is found. null pointer by default </param>
+            <param name="test"> If this is enabled, it throws an error on keynotfounbd false on default </param>
+            <param name="quiet"> If this is enabled, it doesn't mention at all if a key isn't found. false by default </param>
+        </member>
+        <member name="M:CFGReader.IDataStructure.Set``1(System.String,``0)">
+            <summary> Set a field in the datastructure to a givern value </summary>
+            <typeparam name="T"> The type of the value </typeparam>
+            <param name="name"> The name of the field </param>
+            <param name="value"> The given value </param>
+        </member>
+        <member name="M:CFGReader.IDataStructure.Contains``1(System.String)">
+            <summary> Returns true, if a certain item is in the Datastructure </summary>
+            <typeparam name="T"> the Type of the searched item </typeparam>
+            <param name="name"> The name of the item </param>
+        </member>
+        <member name="M:CFGReader.IDataStructure.Contains(System.String,System.Byte)">
+            <summary> Returns true, if a certain item is in the Datastructure </summary>
+            <param name="name"> The name of the item </param>
+            <param name="type"> The Type class of the object </param>
+        </member>
+        <member name="M:CFGReader.IDataStructure.GetChild(System.String)">
+            <summary> Trys to find a child with a given name </summary>
+            <param name="child_name"> name of the child to find </param>
+            <returns> the child, or null if not present </returns>
+        </member>
+        <member name="M:CFGReader.IDataStructure.GetAllChildren(System.String[])">
+            <summary>
+            	Trys to find at least one child with a given name.
+            	Returns an array of all the children with the given name
+            </summary>
+            <param name="child_names"> array of names of the children to be found </param>
+            <returns> An array with all the children; can be empty </returns>
+        </member>
+        <member name="M:CFGReader.IDataStructure.ContainsChild(System.String)">
+            <summary>
+            	Recursive function, which checks, if a item with a given name
+            	is contained somewhere in the DataStructure.
+            	Returns true, if it is, false if it isn't.
+            </summary>
+            <param name="item_name">the name of the item to search</param>
+            <returns>boolean (is the dataq with the name present?)</returns>
+        </member>
+        <member name="T:CFGReader.IDataStructureEvents">
+            <summary> The interface to handle the events of the vector </summary>
+        </member>
+        <member name="T:CFGReader.IVector">
+            <summary> The interface to access n-dimensional vectors </summary>
+        </member>
+        <member name="M:CFGReader.IVector.Init(System.UInt32)">
+            <summary> Initialize a vector with a size </summary>
+            <param name="size"> How many values the vector can hold </param>
+        </member>
+        <member name="M:CFGReader.IVector.Init(System.Double[])">
+            <summary> 
+            	Initialize the vector with an array
+            	The size of the vector will be equivalent to the size of the array
+            </summary>
+            <param name="content"> The array with the values of the vector </param>
+        </member>
+        <member name="M:CFGReader.IVector.Get(System.UInt32)">
+            <summary> Get the value </summary>
+            <param name="i"> Index specified </param>
+        </member>
+        <member name="M:CFGReader.IVector.Set(System.UInt32,System.Double)">
+            <summary> Set the value </summary>
+            <param name="i"> Index specified </param>
+            <param name="value"> The given new vale to set the field to </param>
+        </member>
+        <member name="M:CFGReader.IVector.ToText">
+            <summary> Returns a nicely formated string </summary>
+        </member>
+        <member name="T:CFGReader.IVectorEvents">
+            <summary> The interface to handle the events of the vector </summary>
+        </member>
+        <member name="T:CFGReader.IReader">
+            <summary> The general reader </summary>
+        </member>
+        <member name="M:CFGReader.IReader.SetFlag(System.Byte,System.String)">
+            <summary> Sets general flags </summary>
+            <param name="flag">	The flags as a byte </param>
+            <param name="value"> Value of the flag </param>
+            <remarks> 
+            	Flag values are as follows:
+            		-0x10: path
+            		-0x11: 
+            </remarks>
+        </member>
+        <member name="M:CFGReader.IReader.LoadDataStructure(System.String,System.String,CFGReader.DataStructure,System.Boolean)">
+            <summary> Loads a datastructure from a file  </summary>
+            <param name="path"> The file name and directory </param>
+            <param name="name"> Name of the DS (default is "data")</param>
+            <param name="parent"> Parent of the DS (default is null))</param>
+            <param name="is_general"> If the filepath is a full filepath (true), or just the path inside the configs </param>
+            <returns> The DataStructure, null if the file does not exists </returns>
+        </member>
+        <member name="M:CFGReader.IReader.LoadDataStructureFromDir(System.String,System.String,CFGReader.DataStructure)">
+            <summary> Loads a datastructure combining all the datastructures from one drectory  </summary>
+            <param name="dir_path"> path of the folder </param>
+            <param name="name"> nameof the DS (default is "data")</param>
+            <param name="parent"> parent of the DS (default is null) </param>
+        </member>
+        <member name="M:CFGReader.IReader.CreateNewDataStructure(System.String,CFGReader.DataStructure)">
+            <summary> Creates a new DataStructure </summary>
+            <param name="name"> The name of the DataStructure </param>
+            <param name="parent"> the parent of the Datastructure, null, if it has none </param>
+        </member>
+        <member name="T:CFGReader.IReaderEvents">
+            <summary> The interface to handle the events for the general reader </summary>
+        </member>
+        <member name="T:CFGReader.Reader">
+            <summary> Frontend general features </summary>
+        </member>
+        <member name="M:CFGReader.Reader.SetFlag(System.Byte,System.String)">
+            <see cref="M:CFGReader.IReader.SetFlag(System.Byte,System.String)"/>
+        </member>
+        <member name="M:CFGReader.Reader.LoadDataStructure(System.String,System.String,CFGReader.DataStructure,System.Boolean)">
+            <see cref="M:CFGReader.IReader.LoadDataStructure(System.String,System.String,CFGReader.DataStructure,System.Boolean)"/>
+        </member>
+        <member name="M:CFGReader.Reader.LoadDataStructureFromDir(System.String,System.String,CFGReader.DataStructure)">
+            <see cref="M:CFGReader.IReader.LoadDataStructureFromDir(System.String,System.String,CFGReader.DataStructure)"/>
+        </member>
+        <member name="M:CFGReader.Reader.CreateNewDataStructure(System.String,CFGReader.DataStructure)">
+            <see cref="M:CFGReader.IReader.CreateNewDataStructure(System.String,CFGReader.DataStructure)"/>
+        </member>
+        <member name="T:CFGReader.BackendFunctions">
+            <summary> A range of several tools </summary>
+        </member>
+        <member name="F:CFGReader.BackendFunctions.Path">
+            <summary> General path, where to go off from </summary>
+        </member>
+        <member name="F:CFGReader.BackendFunctions.LogFilePath">
+            <summary> File to log errors/notifications </summary>
+        </member>
+        <member name="F:CFGReader.BackendFunctions.placehloder">
+            <summary> Placeholder character </summary>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.LogFormat(System.String,System.Object[])">
+            <summary> Log to the log file as format </summary>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.Log(System.String)">
+            <summary> Log to the logfile </summary>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.ReadLines(System.String,System.String[]@)">
+            <summary> Reads lines from a given path into a string array (and gives length into an int) returns true if it was succesfull </summary>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.ParseInt(System.String,System.String,System.Int32)">
+            <summary> Parses signed 32-bit integers, hexadecimal is specified with an 'x' at the front </summary>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.ParseShort(System.String,System.String,System.Int32)">
+            <summary> Parses unsigned 16-bit integers, hexadecimal is specified with an 'x' at the front </summary>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.ParseLong(System.String,System.String,System.Int32)">
+            <summary> Parses unsigned 64-bit integers </summary>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.ParseFloat(System.String,System.String,System.Int32)">
+            <summary> Parses 32-bit floating point numbers </summary>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.ParseDouble(System.String,System.String,System.Int32)">
+            <summary> Parses 64-bit floating point numbers </summary>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.ParseVector(System.UInt32,System.String[],System.Char[])">
+            <summary> Trys to read vectors from a string array </summary>
+            <param name="dimensions"> The size of the vector</param>
+            <param name="txt_lines"> The lines of text, containing the vectors </param>
+            <param name="sep"> The sysmbol, with wich the numbers of the vector are seperated, default is ',' </param>
+            <returns> An array of te vectors </returns>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.ParseString(System.String)">
+            <summary> parses string </summary>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.AllFileNamesInDir(System.String)">
+            <summary> Returns an array with all teh filenames </summary>
+            <param name="path"> The file path </param>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.AllFilesInDir(System.String,System.String[]@)">
+            <param name="path"> The path of the directory (without "\") </param>
+            <param name="fnames">The names of the files </param>
+            <returns> All the files in a directory as an array as text </returns>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.FileLog(System.String)">
+            <summary> Logs a line to the logfile </summary>
+            <param name="log"> line to be logged </param>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.ZeroVector(System.UInt32)">
+            <summary> Returns a vector with a given size and all zeros </summary>
+            <param name="size"> size of the vector </param>
+        </member>
+        <member name="M:CFGReader.BackendFunctions.RandomVector(System.UInt32,System.Double,System.Double)">
+            <summary> Gives random vector </summary>
+            <param name="size"> Size of the vector </param>
+            <param name="min_value"> Minimum random value (included) </param>
+            <param name="max_value"> Maximum random value (excluded) </param>
+        </member>
+        <member name="T:CFGReader.Vector">
+            <summary> The actual vector class implementation </summary>
+        </member>
+        <member name="F:CFGReader.Vector.size">
+            <summary> Size of the vector </summary>
+        </member>
+        <member name="P:CFGReader.Vector.Item(System.UInt32)">
+            <summary> For indexing </summary>
+        </member>
+        <member name="M:CFGReader.Vector.#ctor">
+            <summary> Constrctor 1 </summary>
+        </member>
+        <member name="M:CFGReader.Vector.#ctor(System.UInt32)">
+            <summary> Constrctor 2 </summary>
+        </member>
+        <member name="M:CFGReader.Vector.#ctor(System.Double[])">
+            <summary> Constrctor 3 </summary>
+        </member>
+        <member name="M:CFGReader.Vector.Init(System.UInt32)">
+            <see cref="M:CFGReader.IVector.Init(System.UInt32)"/>
+        </member>
+        <member name="M:CFGReader.Vector.Init(System.Double[])">
+            <see cref="M:CFGReader.IVector.Init(System.Double[])"/>
+        </member>
+        <member name="M:CFGReader.Vector.Get(System.UInt32)">
+            <see cref="M:CFGReader.IVector.Get(System.UInt32)"/>
+        </member>
+        <member name="M:CFGReader.Vector.Set(System.UInt32,System.Double)">
+            <see cref="M:CFGReader.IVector.Set(System.UInt32,System.Double)"/>
+        </member>
+        <member name="M:CFGReader.Vector.ToText">
+            <see cref="M:CFGReader.IVector.ToText"/>
+        </member>
+    </members>
+</doc>
