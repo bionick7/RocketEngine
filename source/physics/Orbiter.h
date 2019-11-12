@@ -42,7 +42,7 @@ public:
 
 	void virtual update(double);
 
-	std::wstring name = L"";
+	std::string name = "";
 
 	glm::vec3 meta_position;
 

@@ -78,12 +78,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\MyData\Programing\C++\RocketEngine2;C:\MyData\Programing\C++\RocketEngine2\external\custom;C:\MyData\Programing\C++\RocketEngine2\external\glm-0.9.7.1;C:\MyData\Programing\C++\RocketEngine2\external\glfw-3.1.2\include;C:\MyData\Programing\C++\RocketEngine2\external\glew-1.13.0\include;C:\MyData\Programing\C++\RocketEngine2\external\bullet-2.81-rev2613\src;C:\MyData\Programing\C++\RocketEngine2\external\assimp-3.0.1270\include;C:\MyData\Programing\C++\RocketEngine2\external\AntTweakBar-1.16\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programing\C++\RocketEngine2;D:\Programing\C++\RocketEngine2\external\custom;D:\Programing\C++\RocketEngine2\external\glm-0.9.7.1;D:\Programing\C++\RocketEngine2\external\glfw-3.1.2\include;D:\Programing\C++\RocketEngine2\external\glew-1.13.0\include;D:\Programing\C++\RocketEngine2\external\bullet-2.81-rev2613\src;D:\Programing\C++\RocketEngine2\external\assimp-3.0.1270\include;D:\Programing\C++\RocketEngine2\external\AntTweakBar-1.16\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;GLEW_1130.lib;glfw3.lib;ANTTWEAKBAR_116_OGLCORE_GLFW.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\MyData\Programing\C++\RocketEngine2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Programing\C++\RocketEngine2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -93,7 +93,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\Programing\C++\RocketEngine2;D:\Programing\C++\RocketEngine2\external\custom;D:\Programing\C++\RocketEngine2\external\glm-0.9.7.1;D:\Programing\C++\RocketEngine2\external\glfw-3.1.2\include;D:\Programing\C++\RocketEngine2\external\glew-1.13.0\include;D:\Programing\C++\RocketEngine2\external\bullet-2.81-rev2613\src;D:\Programing\C++\RocketEngine2\external\assimp-3.0.1270\include;D:\Programing\C++\RocketEngine2\external\AntTweakBar-1.16\include</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>D:\Programing\C++\RocketEngine2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;GLEW_1130.lib;glfw3.lib;ANTTWEAKBAR_116_OGLCORE_GLFW.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

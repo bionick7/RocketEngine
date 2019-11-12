@@ -22,13 +22,18 @@ Drawing::Drawing(float args[], int len) {
 
 GLuint shader, matrix_ID, color_ID;
 
-void draw_drawing(Drawing drawing, pixel x, pixel y, pixel width, pixel height) {
-	shader = assets->get_shader(L"Simple");
+void draw_drawing(Drawing* drawing, Screenpos start, pixel width, pixel height) {
+	shader = assets->get_shader("Simple");
 	matrix_ID = glGetUniformLocation(shader, "VP");
 	color_ID = glGetUniformLocation(shader, "Color");
 
-	unsigned int vertex_buffer_size = drawing.lines.size();
+	unsigned int vertex_buffer_size = drawing->lines.size();
 	std::vector<GLuint> vertexbuffers = std::vector<GLuint>();
+
+	// Recalculate coordinates
+	GLPos start_pos = pixel2glpos(start);
+	float fl_width = (float) width / settings->width * 2.0f;
+	float fl_height = (float) height / settings->height * 2.0f;
 
 	GLuint* vertexbuffers_ptxs = new GLuint[vertex_buffer_size];
 
@@ -41,13 +46,13 @@ void draw_drawing(Drawing drawing, pixel x, pixel y, pixel width, pixel height) 
 		glBindVertexArray(*(vertex_arrays + i));
 		GLfloat vertex_buffer_data[6];
 
-		Line line = drawing.lines[i];
+		Line line = drawing->lines[i];
 
-		*(vertex_buffer_data + 0) = line.x_start;
-		*(vertex_buffer_data + 1) = line.y_start;
+		*(vertex_buffer_data + 0) = start_pos.x + line.x_start * fl_width;
+		*(vertex_buffer_data + 1) = start_pos.y + line.y_start * fl_height;
 		*(vertex_buffer_data + 2) = 0;
-		*(vertex_buffer_data + 3) = line.x_end;
-		*(vertex_buffer_data + 4) = line.y_end;
+		*(vertex_buffer_data + 3) = start_pos.x + line.x_end * fl_width;
+		*(vertex_buffer_data + 4) = start_pos.y + line.y_end * fl_height;
 		*(vertex_buffer_data + 5) = 0;
 
 		glBindBuffer(GL_ARRAY_BUFFER, *(vertexbuffers_ptxs + i));

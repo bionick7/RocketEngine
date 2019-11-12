@@ -46,8 +46,8 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	cfg::DataStructure* main_structure = cfg::read_file(init_path, cfg::base_dir, L"Main", NULL, false);
-	settings = new Settings(main_structure->get_child(L"settings"));
+	cfg::DataStructure* main_structure = cfg::read_file(init_path, cfg::base_dir, "Main", NULL, false);
+	settings = new Settings(main_structure->get_child("settings"));
 
 	// Open a window
 	GLFWwindow* window_ptx;
@@ -65,11 +65,11 @@ int main(int argc, char** argv) {
 		throw - 1;
 	}
 
-	assets = new AssetSet(main_structure->get_child(L"assets"));
+	assets = new AssetSet(main_structure->get_child("assets"));
 	Camera cam = Camera(window_ptx, &scroll_value);
 	glfwSetScrollCallback(window_ptx, scroll_callback);
 
-	cfg::DataStructure* sun_data = main_structure->get_child(L"celestial information")->get_child(L"Sun");
+	cfg::DataStructure* sun_data = main_structure->get_child("celestial information")->get_child("Sun");
 
 	Celestial sun = Celestial(sun_data);
 	change_focus(&sun);
@@ -86,10 +86,19 @@ int main(int argc, char** argv) {
 	Circle c = Circle(1);
 	c.world_position = vec3(0, 0, 0);
 
-	Textmesh* tm = new Textmesh(TEXT(L"p enter"), assets->default_font);
+	float pts[] = {
+		0.0f, 0.0f, 1.0f, 1.0f
+	};
+	Drawing* drw = new Drawing(pts, 4);
+	char* all_ascii = new char[127 - 32];
+	for (int i = 32; i < 127; i++) {
+		all_ascii[i - 32] = i;
+	}
+	all_ascii[127 - 32] = 0x00;
+	Textmesh* tm = new Textmesh(all_ascii/*TEXT("p enter")*/, assets->default_font);
 	tm->set_transform(5, 5, -1, 20);
 
-	//TextInput ti = TextInput(L"H",assets->default_font, window_ptx);
+	//TextInput ti = TextInput("H",assets->default_font, window_ptx);
 	//ti.set_transform(5, 500, -1, 20);
 
 	// Main loop
@@ -107,6 +116,7 @@ int main(int argc, char** argv) {
 		cam.focus(current_camera_focus->meta_position);
 
 		sun.draw(&cam);
+		//draw_drawing(drw, Screenpos(0, 0), 100, 100);
 		tm->draw(&cam);
 		//ti.draw(&cam);
 

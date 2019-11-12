@@ -10,6 +10,16 @@ Screenpos::Screenpos() {
 	y = 0;
 }
 
+GLPos::GLPos(float _x, float _y) {
+	x = _x;
+	y = _y;
+}
+
+GLPos::GLPos() {
+	x = 0;
+	y = 0;
+}
+
 LongVector::LongVector(glm::vec3 vec) {
 	x = vec.x;
 	y = vec.y;

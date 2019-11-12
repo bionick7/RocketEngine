@@ -3,7 +3,7 @@
 glm::vec3 get_pos(glm::mat4 vp_matrix, glm::vec3 world_position, float aspect_ratio);
 
 Polygone::Polygone() {
-	shader = assets->get_shader(L"Simple");
+	shader = assets->get_shader("Simple");
 
 	matrix_ID = glGetUniformLocation(shader, "VP");
 	color_ID = glGetUniformLocation(shader, "Color");

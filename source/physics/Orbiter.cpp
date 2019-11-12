@@ -7,19 +7,19 @@ Orbiter::Orbiter(cfg::DataStructure* data)
 	name = data->get_name();
 
 	parent = CelestialEssentials();
-	if (data->get_int(L"no parent", 13, true) != 13) {
+	if (data->get_int("no parent", 13, true) != 13) {
 		parent.is_valid = false;
 	} else {
 		parent.is_valid = true;
-		parent.mu = data->parent->get_double(L"mass") * G;
+		parent.mu = data->parent->get_double("mass") * G;
 	}
 
 	orbit = OrbitData();
-	orbit.eccentricity = data->get_double(L"Ecc");
-	orbit.semi_major_axis = data->get_double(L"SMA");
-	orbit.inclination = data->get_double(L"Inc");
-	orbit.argument_of_periapsis = data->get_double(L"AoP");
-	orbit.longitude_of_ascending_note = data->get_double(L"LoA");
+	orbit.eccentricity = data->get_double("Ecc");
+	orbit.semi_major_axis = data->get_double("SMA");
+	orbit.inclination = data->get_double("Inc");
+	orbit.argument_of_periapsis = data->get_double("AoP");
+	orbit.longitude_of_ascending_note = data->get_double("LoA");
 
 	current_anomaly = 0;
 

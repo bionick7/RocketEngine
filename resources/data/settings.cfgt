@@ -3,8 +3,8 @@
 	vc3 Draw_color = 0; 1; 0
 	int Line_thickness = 3
 	
-	int Screen_width = 800
-	int Screen_height = 600
+	int Screen_width = 1280
+	int Screen_height = 800
 <
 
 >Audio

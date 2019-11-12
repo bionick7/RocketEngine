@@ -23,6 +23,14 @@ struct Screenpos {
 	Screenpos(int _x, int _y);
 };
 
+struct GLPos {
+	float x;
+	float y;
+
+	GLPos();
+	GLPos(float _x, float _y);
+};
+
 struct LongVector {
 	LongVectorType x;
 	LongVectorType y;

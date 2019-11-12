@@ -2,12 +2,12 @@
 
 TextInput* text_input_focused = NULL;
 
-TextInput::TextInput(Font _font, GLFWwindow* window) : Textmesh::Textmesh(L"", _font) {
+TextInput::TextInput(Font _font, GLFWwindow* window) : Textmesh::Textmesh("", _font) {
 	glfwSetKeyCallback(window, key_callback);
 	text_input_focused = this;
 }
 
-TextInput::TextInput(std::wstring _content, Font _font, GLFWwindow* window) : Textmesh::Textmesh(_content, _font) {
+TextInput::TextInput(std::string _content, Font _font, GLFWwindow* window) : Textmesh::Textmesh(_content, _font) {
 	glfwSetKeyCallback(window, key_callback);
 	text_input_focused = this;
 }
@@ -15,11 +15,11 @@ TextInput::TextInput(std::wstring _content, Font _font, GLFWwindow* window) : Te
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (action != GLFW_PRESS) return;
 	if (text_input_focused == NULL) return;
-	std::wstring cont = text_input_focused->get_content();
-	wchar_t add = 0x00;
+	std::string cont = text_input_focused->get_content();
+	char add = 0x00;
 	if (0x41 < key && key < 0x5b) {
 		// letter
-		add = (wchar_t) key;
+		add = key;
 		if (!(mods & GLFW_MOD_SHIFT)) {
 			add += 0x20;
 		}

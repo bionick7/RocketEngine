@@ -23,4 +23,8 @@
 		chr image_path = \P \</fonts/def.dds
 		chr name = Default
 	<
+	>DefaultVector
+		chr data_path = \P \</fonts/def.vecfont
+		chr name = Default
+	<
 <

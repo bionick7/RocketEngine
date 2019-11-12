@@ -9,7 +9,7 @@ class TextInput :
 {
 public:
 	TextInput(Font, GLFWwindow*);
-	TextInput(std::wstring, Font, GLFWwindow*);
+	TextInput(std::string, Font, GLFWwindow*);
 };
 
 #endif //!TEXT_INPUT_H

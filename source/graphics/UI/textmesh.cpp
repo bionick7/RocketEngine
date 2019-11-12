@@ -2,10 +2,7 @@
 
 bool is_initialized = false;
 
-float test_character_vectors[]{ 0.0f, 0.0f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 0.0f, 0.25f, 0.5f, 0.75, 0.5f };
-Drawing test = Drawing(test_character_vectors, 12);
-
-Textmesh::Textmesh(std::wstring _content, Font _font) {
+Textmesh::Textmesh(std::string _content, Font _font) {
 	if (!is_initialized) {
 		is_initialized = true;
 	}
@@ -26,11 +23,11 @@ Textmesh::~Textmesh() {
 	glDeleteBuffers(1, &UVBufferID_MatrixID);
 }
 
-std::wstring Textmesh::get_content() {
+std::string Textmesh::get_content() {
 	return content;
 }
 
-void Textmesh::set_content(std::wstring _content) {
+void Textmesh::set_content(std::string _content) {
 	content = _content;
 	recalculate();
 }
@@ -40,6 +37,7 @@ void Textmesh::set_transform(float _x, float _y, float _sizex, float _sizey) {
 		_sizex = INFINITY;
 	}
 	UIElement::set_transform(_x, _y, _sizex, _sizey);
+	recalculate();
 }
 
 void Textmesh::recalculate() {
@@ -49,23 +47,39 @@ void Textmesh::recalculate() {
 	if (length == 0)
 		return;
 
-	float size = std::min(widt / length, height);
+	float size = std::min(width / length, height);
 
 	if (vector) {
-		GLuint shader = assets->get_shader(L"Simple");
+		const float spacing = .4f;
+		const float ratio = 1.2f;
+
+		GLuint shader = assets->get_shader("Simple");
 		UVBufferID_MatrixID = glGetUniformLocation(shader, "VP");
 		ColorID = glGetUniformLocation(shader, "Color");
 
+		// Recalculate coordinates
+		GLPos start_pos = pixel2glpos(Screenpos(x, y));
+		float fl_width = (float)height / (settings->width * ratio) * 2.0f;
+		float fl_height = (float)height / settings->height * 2.0f;
+
 		std::vector<Line> lines = std::vector<Line>();
+
 		// Fill buffers
 		for (unsigned int i = 0; i < length; i++) {
-			Drawing d = test;
+			unsigned char *data = assets->default_vector_font.data[content[i]];
 
-			for (Line l : test.lines) lines.push_back(l);
+			for (int j = 0; *(data + j) != 0; j += 4) {
+				lines.push_back(Line(
+					(*(data + j) -1) / 254.0f + i * (1 + spacing),
+					(*(data + j + 1) - 1) / 254.0f,
+					(*(data + j + 2) - 1) / 254.0f + i * (1 + spacing),
+					(*(data + j + 3) - 1) / 254.0f
+				));
+			}
 		}
 
-		unsigned int vertex_buffer_size = lines.size();
-		std::vector<GLuint> vertexbuffers = std::vector<GLuint>();
+		vertex_buffer_size = lines.size();
+		vertexbuffers = std::vector<GLuint>();
 
 		GLuint* vertexbuffers_ptxs = new GLuint[vertex_buffer_size];
 
@@ -80,11 +94,11 @@ void Textmesh::recalculate() {
 
 			Line line = lines[i];
 
-			*(vertex_buffer_data + 0) = line.x_start;
-			*(vertex_buffer_data + 1) = line.y_start;
+			*(vertex_buffer_data + 0) = start_pos.x + line.x_start * fl_width;
+			*(vertex_buffer_data + 1) = start_pos.y + line.y_start * fl_height;
 			*(vertex_buffer_data + 2) = 0;
-			*(vertex_buffer_data + 3) = line.x_end;
-			*(vertex_buffer_data + 4) = line.y_end;
+			*(vertex_buffer_data + 3) = start_pos.x + line.x_end * fl_width;
+			*(vertex_buffer_data + 4) = start_pos.y + line.y_end * fl_height;
 			*(vertex_buffer_data + 5) = 0;
 
 			glBindBuffer(GL_ARRAY_BUFFER, *(vertexbuffers_ptxs + i));
@@ -92,6 +106,8 @@ void Textmesh::recalculate() {
 
 			vertexbuffers.push_back(*(vertexbuffers_ptxs + i));
 		}
+
+		delete[] vertexbuffers_ptxs;
 	}
 	else {
 
@@ -113,7 +129,7 @@ void Textmesh::recalculate() {
 			vertices.push_back(vertex_up_right);
 			vertices.push_back(vertex_down_left);
 
-			wchar_t character = content[i];
+			char character = content[i];
 			float uv_x = (character % 16) / 16.0f;
 			float uv_y = (character / 16) / 16.0f;
 
@@ -140,7 +156,7 @@ void Textmesh::draw(Camera* cam) {
 	if (vector) {
 		glm::mat4 transform_matrix = glm::mat4(1.0f);
 
-		glUseProgram(assets->get_shader(L"Simple"));
+		glUseProgram(assets->get_shader("Simple"));
 		glUniformMatrix4fv(UVBufferID_MatrixID, 1, GL_FALSE, &transform_matrix[0][0]);
 		glUniform3f(ColorID, settings->draw.r, settings->draw.g, settings->draw.b);
 

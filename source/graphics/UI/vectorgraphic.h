@@ -15,6 +15,6 @@ struct Drawing {
 	std::vector<Line> lines;
 };
 
-void draw_drawing(Drawing, pixel, pixel, pixel, pixel);
+void draw_drawing(Drawing*, Screenpos, pixel, pixel);
 
 #endif // !VECTORGRAAPHIC_H

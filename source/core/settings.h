@@ -25,7 +25,7 @@ struct Color {
 	float r, g, b, a;
 };
 
-Color get_color(cfg::DataStructure*, std::wstring);
+Color get_color(cfg::DataStructure*, std::string);
 
 class Settings {
 public:
@@ -46,11 +46,11 @@ public:
 	float get_volume(char);
 	void change_language_to(char);
 
-	std::wstring get_text_for(std::wstring);
+	std::string get_text_for(std::string);
 
 private:
 	
-	//std::map<std::wstring, std::wstring> translations = std::map<std::wstring, std::wstring>();
+	//std::map<std::string, std::string> translations = std::map<std::string, std::string>();
 
 	cfg::DataStructure* translation_pointers[languages_num];
 	float volumes[volume_array_size];

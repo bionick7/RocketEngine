@@ -21,7 +21,7 @@ Circle::Circle(double rad)
 	vertex_buffer = get_quad_buffer(.5f);
 
 	// initialize shader
-	shader = assets->get_shader(L"Circle");
+	shader = assets->get_shader("Circle");
 
 	matrix_ID = glGetUniformLocation(shader, "VP");
 	color_ID = glGetUniformLocation(shader, "Color");
