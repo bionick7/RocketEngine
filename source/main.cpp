@@ -89,17 +89,14 @@ int main(int argc, char** argv) {
 	float pts[] = {
 		0.0f, 0.0f, 1.0f, 1.0f
 	};
-	Drawing* drw = new Drawing(pts, 4);
-	char* all_ascii = new char[127 - 32];
-	for (int i = 32; i < 127; i++) {
-		all_ascii[i - 32] = i;
-	}
-	all_ascii[127 - 32] = 0x00;
-	Textmesh* tm = new Textmesh(all_ascii/*TEXT("p enter")*/, assets->default_font);
-	tm->set_transform(5, 5, -1, 20);
 
-	//TextInput ti = TextInput("H",assets->default_font, window_ptx);
-	//ti.set_transform(5, 500, -1, 20);
+	const char* all_ascii = " !\"#$%&\\'()*+,-./0123456789:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`\nabcdefghijklmnopqrstuvwxyz{|}~";
+	Textmesh* tm = new Textmesh(all_ascii/*TEXT("p enter")*/, assets->default_font);
+	tm->set_transform(5, 100, -1, 20);
+
+	const char* enter_text = "Enter text here: \n";
+	TextInput* ti = new TextInput(enter_text, assets->default_font, window_ptx);
+	ti->set_transform(10, -50, -1, 20);
 
 	// Main loop
 	glfwSetInputMode(window_ptx, GLFW_STICKY_KEYS, GL_TRUE);
@@ -116,14 +113,14 @@ int main(int argc, char** argv) {
 		cam.focus(current_camera_focus->meta_position);
 
 		sun.draw(&cam);
-		//draw_drawing(drw, Screenpos(0, 0), 100, 100);
 		tm->draw(&cam);
-		//ti.draw(&cam);
+		ti->draw(&cam);
 
 		if (glfwGetKey(window_ptx, GLFW_KEY_ENTER) == GLFW_PRESS) {
 			enter_pressed = true;
 		}
 
+		/*
 		if (glfwGetKey(window_ptx, GLFW_KEY_ENTER) == GLFW_RELEASE) {
 			if (enter_pressed) {
 				orbiter_index = (orbiter_index + 1) % all_orbiters.size();
@@ -132,7 +129,7 @@ int main(int argc, char** argv) {
 			}
 			enter_pressed = false;
 		}
-
+		*/
 		// Swap buffers
 		glfwSwapBuffers(window_ptx);
 		glfwPollEvents();

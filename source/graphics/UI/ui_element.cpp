@@ -21,9 +21,11 @@ UIElement::UIElement() {
 	height = 0;
 }
 
-void UIElement::set_transform(float _x, float _y, float _width, float _height) {
-	x = _x;
-	y = _y;
+void UIElement::set_transform(int _x, int _y, int _width, int _height) {
+	if (_x >= 0) x = _x;
+	else x = settings->width + _x;
+	if (_y >= 0) y = _y;
+	else y = settings->height + _y;
 	width = _width;
 	height = _height;
 	recalculate();

@@ -9,13 +9,13 @@ class UIElement abstract
 {
 public:
 	UIElement();
-	void virtual set_transform(float, float, float, float);
+	void virtual set_transform(int, int, int, int);
 
 	void virtual update(double, GLFWwindow*);
 	void virtual draw(Camera*);
 
 protected:
-	float x, y, width, height;
+	pixel x, y, width, height;
 
 	void virtual recalculate();
 };

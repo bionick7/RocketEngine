@@ -19,10 +19,6 @@ unsigned char** get_vector_data(std::string path) {
 	char* buffer = new char[size];
 	file.read(buffer, size);
 	file.close();
-	for (int i = 0; i < size; i++) {
-		std::cout << std::to_string((int)(unsigned char) buffer[i]) << " ";
-	}
-	std::cout << std::endl;
 	unsigned char** res = new unsigned char* [256];
 	int local_index = 0, total_index = 0;
 	for (int i = 0; i < 256; i++) {
@@ -38,11 +34,6 @@ unsigned char** get_vector_data(std::string path) {
 		total_index += local_index + 1;
 		res[i][local_index] = 0x00;
 	}
-	/*
-	res[33] = new unsigned char[9] { 127, 255, 127, 52, 127, 26, 127, 1, 0 };
-	res[34] = new unsigned char[9] { 100, 255, 100, 192, 150, 255, 150, 192, 0 };
-	res[65] = new unsigned char[13] { 1, 1, 127, 255, 127, 255, 255, 1, 64, 127, 192, 127, 0 };
-	*/
 	return res;
 }
 

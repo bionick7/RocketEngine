@@ -32,12 +32,95 @@ void Textmesh::set_content(std::string _content) {
 	recalculate();
 }
 
-void Textmesh::set_transform(float _x, float _y, float _sizex, float _sizey) {
+void Textmesh::set_transform(int _x, int _y, int _sizex, int _sizey) {
 	if (_sizex < 0) {
 		_sizex = INFINITY;
 	}
 	UIElement::set_transform(_x, _y, _sizex, _sizey);
 	recalculate();
+}
+
+
+std::vector<float> Textmesh::get_lines() {
+	unsigned int length = content.length();
+	if (length == 0)
+		return std::vector<float>();
+
+	float size = std::min(width / length, height);
+
+	GLuint shader = assets->get_shader("Simple");
+	UVBufferID_MatrixID = glGetUniformLocation(shader, "VP");
+	ColorID = glGetUniformLocation(shader, "Color");
+
+	std::vector<float> lines = std::vector<float>();
+
+	Textpos tp = { 0, 0 };
+	// Fill buffers
+	for (unsigned int i = 0; i < length; i++) {
+		if (content[i] >= 32) {
+			unsigned char* data = assets->default_vector_font.data[content[i]];
+
+			for (int j = 0; *(data + j) != 0; j += 4) {
+				lines.push_back((*(data + j + 0) - 1) / 254.0f + tp.x * (1 + spacing_x));
+				lines.push_back((*(data + j + 1) - 1) / 254.0f - tp.y * (1 + spacing_y));
+				lines.push_back((*(data + j + 2) - 1) / 254.0f + tp.x * (1 + spacing_x));
+				lines.push_back((*(data + j + 3) - 1) / 254.0f - tp.y * (1 + spacing_y));
+			}
+		}
+		else {
+			// Control characters
+			switch (content[i])
+			{
+			case '\a':
+				// Ding!
+				break;
+			case '\f':
+				// cls
+				break;
+			default:
+				break;
+			}
+		}
+		increment_tp(&tp, content[i]);
+	}
+
+	return lines;
+}
+
+void Textmesh::setup_lines(std::vector<float> lines) {
+	vertex_buffer_size = lines.size() / 4;
+	vertexbuffers = std::vector<GLuint>();
+
+	// Recalculate coordinates
+	GLPos start_pos = pixel2glpos(Screenpos(x, y));
+	float fl_width = (float)height / (settings->width * ratio) * 2.0f;
+	float fl_height = (float)height / settings->height * 2.0f;
+
+	GLuint* vertexbuffers_ptxs = new GLuint[vertex_buffer_size];
+
+	glGenBuffers(vertex_buffer_size, vertexbuffers_ptxs);
+
+	GLuint* vertex_arrays = new GLuint[vertex_buffer_size];
+	glGenVertexArrays(vertex_buffer_size, vertex_arrays);
+
+	for (unsigned i = 0; i < vertex_buffer_size; i ++) {
+		glBindVertexArray(*(vertex_arrays + i));
+		GLfloat vertex_buffer_data[6];
+
+		*(vertex_buffer_data + 0) = start_pos.x + lines[4*i] * fl_width;
+		*(vertex_buffer_data + 1) = start_pos.y + lines[4*i + 1] * fl_height;
+		*(vertex_buffer_data + 2) = 0;
+		*(vertex_buffer_data + 3) = start_pos.x + lines[4 * i + 2] * fl_width;
+		*(vertex_buffer_data + 4) = start_pos.y + lines[4 * i + 3] * fl_height;
+		*(vertex_buffer_data + 5) = 0;
+
+		glBindBuffer(GL_ARRAY_BUFFER, *(vertexbuffers_ptxs + i));
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer_data), vertex_buffer_data, GL_STREAM_DRAW);
+
+		vertexbuffers.push_back(*(vertexbuffers_ptxs + i));
+	}
+
+	delete[] vertexbuffers_ptxs;
 }
 
 void Textmesh::recalculate() {
@@ -49,65 +132,8 @@ void Textmesh::recalculate() {
 
 	float size = std::min(width / length, height);
 
-	if (vector) {
-		const float spacing = .4f;
-		const float ratio = 1.2f;
-
-		GLuint shader = assets->get_shader("Simple");
-		UVBufferID_MatrixID = glGetUniformLocation(shader, "VP");
-		ColorID = glGetUniformLocation(shader, "Color");
-
-		// Recalculate coordinates
-		GLPos start_pos = pixel2glpos(Screenpos(x, y));
-		float fl_width = (float)height / (settings->width * ratio) * 2.0f;
-		float fl_height = (float)height / settings->height * 2.0f;
-
-		std::vector<Line> lines = std::vector<Line>();
-
-		// Fill buffers
-		for (unsigned int i = 0; i < length; i++) {
-			unsigned char *data = assets->default_vector_font.data[content[i]];
-
-			for (int j = 0; *(data + j) != 0; j += 4) {
-				lines.push_back(Line(
-					(*(data + j) -1) / 254.0f + i * (1 + spacing),
-					(*(data + j + 1) - 1) / 254.0f,
-					(*(data + j + 2) - 1) / 254.0f + i * (1 + spacing),
-					(*(data + j + 3) - 1) / 254.0f
-				));
-			}
-		}
-
-		vertex_buffer_size = lines.size();
-		vertexbuffers = std::vector<GLuint>();
-
-		GLuint* vertexbuffers_ptxs = new GLuint[vertex_buffer_size];
-
-		glGenBuffers(vertex_buffer_size, vertexbuffers_ptxs);
-
-		GLuint* vertex_arrays = new GLuint[vertex_buffer_size];
-		glGenVertexArrays(vertex_buffer_size, vertex_arrays);
-
-		for (unsigned i = 0; i < vertex_buffer_size; i++) {
-			glBindVertexArray(*(vertex_arrays + i));
-			GLfloat vertex_buffer_data[6];
-
-			Line line = lines[i];
-
-			*(vertex_buffer_data + 0) = start_pos.x + line.x_start * fl_width;
-			*(vertex_buffer_data + 1) = start_pos.y + line.y_start * fl_height;
-			*(vertex_buffer_data + 2) = 0;
-			*(vertex_buffer_data + 3) = start_pos.x + line.x_end * fl_width;
-			*(vertex_buffer_data + 4) = start_pos.y + line.y_end * fl_height;
-			*(vertex_buffer_data + 5) = 0;
-
-			glBindBuffer(GL_ARRAY_BUFFER, *(vertexbuffers_ptxs + i));
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer_data), vertex_buffer_data, GL_STREAM_DRAW);
-
-			vertexbuffers.push_back(*(vertexbuffers_ptxs + i));
-		}
-
-		delete[] vertexbuffers_ptxs;
+	if (vector){
+		setup_lines(get_lines());
 	}
 	else {
 
@@ -202,5 +228,36 @@ void Textmesh::draw(Camera* cam) {
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
+	}
+}
+
+Textmesh::Textpos Textmesh::get_text_pos(int index) {
+	Textpos res = { 0, 0 };
+	
+	int len = index < content.length() ? index : content.length();
+	for (int i = 0; i < len; i++) {
+		increment_tp(&res, content[i]);
+	}
+
+	return res;
+}
+
+void Textmesh::increment_tp(Textmesh::Textpos* tp, char c) {
+	if (c == '\n') {
+		tp->y++;
+		tp->x = 0;
+	}
+	else if (c == '\t') {
+		tp->x = (tp->x / 4 + 1) * 4;
+	}
+	else if (c == '\v') {
+		tp->y = (tp->y / 4 + 1) * 4;
+	}
+	else if (c == '\r') {
+		tp->x = 0;
+	}
+	else if (c < 32);
+	else {
+		tp->x++;
 	}
 }
