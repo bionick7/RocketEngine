@@ -54,7 +54,7 @@ void Camera::update(double d_t) {
 
 	glm::vec3 move_dir = glm::normalize(glm::vec3(direction.x, 0, direction.z));
 	glm::vec3 move_right = glm::normalize(glm::cross(move_dir, up));
-
+	/*
 	if (glfwGetKey(window_ptx, GLFW_KEY_UP) == GLFW_PRESS) {
 		focus_point += move_dir * float(d_t * distance);
 	}
@@ -67,7 +67,7 @@ void Camera::update(double d_t) {
 	if (glfwGetKey(window_ptx, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		focus_point -= move_right * float(d_t * distance);
 	}
-
+	*/
 	recalculate_vp();
 }
 

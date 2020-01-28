@@ -7,39 +7,28 @@ class Textmesh:
 	public UIElement
 {
 public:
+	struct Textpos { unsigned x, y; };
+	struct FontAdjustable { float spacing_x, spacing_y, ratio = 1.2f, font_size = 10.0f; };
+
 	Textmesh(std::string, Font);
-	~Textmesh();
 
 	std::string get_content();
 	void set_content(std::string);
-	void set_transform(int, int, int, int) override;
-	void draw(Camera*) override;
+	void set_transform(int, int, int, int, bool=false) override;
 
-	bool vector = true;
 	Font font;
-	struct Textpos { unsigned x, y; };
-	Textpos get_text_pos(int index);
+	FontAdjustable font_settings = {.4f, .7f, 1.2f, 10.0f};
+	Textpos get_text_pos(int);
 
 protected:
-	const float spacing_x = .4f, spacing_y = 0.7f;
-	const float ratio = 1.2f;
 
-	std::vector<float> virtual get_lines();
-	void setup_lines(std::vector<float>);
-	void recalculate() override;
+	std::vector<float> get_lines() override;
 
 private:
-	void increment_tp(Textpos*, char);
 	std::string content;
-
-	GLuint VertexBufferID;
-	GLuint UVBufferID_MatrixID;
-	GLuint SamplerUniformID;
-	GLuint ScreenSizeID;
-	GLuint ColorID;
-
-	unsigned vertex_buffer_size;
-	std::vector<GLuint> vertexbuffers;
 };
+
+void increment_tp(Textmesh::Textpos*, char);
+Textmesh::Textpos get_dimensions(std::string);
 
 #endif // !TEXTMESH_H

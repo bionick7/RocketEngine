@@ -8,7 +8,7 @@ double Celestial::Mu() { return G * mass; }
 Celestial::Celestial(cfg::DataStructure* data) : Orbiter::Orbiter(data) {
 
 	radius = data->get_double("radius");
-	circle = new Circle(radius * position_scale * 10);
+	circle = new Circle(30);//radius* position_scale * 10);
 
 	for (cfg::DataStructure* ds : data->get_all_children()) {
 		sattelites.push_back(new Celestial(ds));

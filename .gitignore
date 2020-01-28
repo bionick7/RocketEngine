@@ -342,7 +342,3 @@ healthchecksdb
 # Customly added
 external/
 lib/
-RocketEngine2.sln
-RocketEngine2.vcxproj
-RocketEngine2.vcxproj.filters
-RocketEngine2.vcxproj.user

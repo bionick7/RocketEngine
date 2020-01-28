@@ -26,6 +26,13 @@ struct InternalEllipsisData {
 	LongQuaternion rotation;
 };
 
+struct OrbitSituation {
+	OrbitData data;
+	double anomaly;
+	CelestialEssentials parent;
+	InternalEllipsisData ellipse;
+};
+
 class Orbiter abstract
 {
 friend class Celestial;
@@ -45,27 +52,32 @@ public:
 	std::string name = "";
 
 	glm::vec3 meta_position;
-
-protected:
+	double current_anomaly;
 	LongVector position;
 
+	OrbitSituation get_situation();
+
+protected:
 	LongVector center_position;
 
 	const double position_scale = 5e-10;
-	const double time_scale = 2.3e6;
+	const double time_scale = 2.3e7;
 
 private:
 	const unsigned points_number = 100;
-
 	InternalEllipsisData ellipsis_data;
-	double current_anomaly;
-
 	point_array_t get_points(bool);
-	LongVector get_point(double);
 };
 
 extern std::vector<Orbiter*> all_orbiters;
 
+// double get_anomaly(OrbitSituation, double);
+LongVector get_point(OrbitSituation, double);
+double get_radius(OrbitSituation);
+LongVector get_position(OrbitSituation);
+LongVector get_velocity(OrbitSituation);
 InternalEllipsisData calculate_ellipsis_data(OrbitData);
+
+//double calculate_minimum_delta_v(OrbitSituation, OrbitSituation, double);
 
 #endif // ORBITER_H

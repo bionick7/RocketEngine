@@ -5,10 +5,7 @@
 
 typedef double LongVectorType;
 
-typedef unsigned int pixel;
-
-//const int base_line_thickness = 3;
-//const glm::vec3 base_color = glm::vec3(0, 1, 0);
+typedef short pixel;
 
 const double pi_ = 3.14159265358979;
 const double pi_halfs = pi_ / 2;
@@ -21,6 +18,11 @@ struct Screenpos {
 
 	Screenpos();
 	Screenpos(int _x, int _y);
+};
+
+struct PolarCoordinates {
+	double argument;
+	double modulus;
 };
 
 struct GLPos {
@@ -44,10 +46,21 @@ struct LongVector {
 
 	LongVectorType distance_to(LongVector);
 	glm::vec3 to_float_vec();
+	LongVector normalized();
 
 	LongVector operator+ (LongVector);
+	LongVector operator- (LongVector);
 	LongVector operator* (LongVectorType);
+	LongVector operator/ (LongVectorType);
 };
+
+LongVectorType longvec_dot(LongVector, LongVector);
+LongVector longvec_cross(LongVector, LongVector);
+LongVectorType longvec_magnitude(LongVector);
+LongVectorType longvec_sqrmagnitude(LongVector);
+LongVectorType longvec_angle(LongVector, LongVector);
+LongVector project_vector(LongVector, LongVector);
+LongVector project2plane(LongVector, LongVector);
 
 struct LongQuaternion {
 	double x, y, z, w;
@@ -64,5 +77,6 @@ struct LongQuaternion {
 
 	glm::quat to_float_quaternion();
 };
+
 
 #endif // !MATH_TOOLS_H

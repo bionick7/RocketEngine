@@ -48,12 +48,20 @@ LongVector::~LongVector() {
 
 }
 
-LongVector LongVector::operator* (LongVectorType d) {
-	return LongVector(x*d, y*d, z*d);
-}
-
 LongVector LongVector::operator+ (LongVector other) {
 	return LongVector(x + other.x, y + other.y, z + other.z);
+}
+
+LongVector LongVector::operator- (LongVector other) {
+	return LongVector(x - other.x, y - other.y, z - other.z);
+}
+
+LongVector LongVector::operator* (LongVectorType d) {
+	return LongVector(x * d, y * d, z * d);
+}
+
+LongVector LongVector::operator/ (LongVectorType d) {
+	return LongVector(x / d, y / d, z / d);
 }
 
 double LongVector::distance_to(LongVector other) {
@@ -63,6 +71,10 @@ double LongVector::distance_to(LongVector other) {
 
 glm::vec3 LongVector::to_float_vec() {
 	return glm::vec3(x, y, z);
+}
+
+LongVector LongVector::normalized() {
+	return *this / longvec_magnitude(*this);
 }
 
 LongQuaternion::LongQuaternion(double _x, double _y, double _z, double _w) {
@@ -113,4 +125,36 @@ LongQuaternion LongQuaternion::get_inverse() {
 
 glm::quat LongQuaternion::to_float_quaternion() {
 	return glm::quat(x, y, z, w);
+}
+
+LongVectorType longvec_magnitude(LongVector v) {
+	return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
+LongVectorType longvec_sqrmagnitude(LongVector v) {
+	return v.x * v.x + v.y * v.y + v.z * v.z;
+}
+
+LongVectorType longvec_dot(LongVector l, LongVector r) {
+	return l.x * r.x + l.y * r.y + l.z * r.z;
+}
+
+LongVector longvec_cross(LongVector a, LongVector b) {
+	return LongVector(
+		a.y * b.z - a.z * b.y,
+		a.z * b.x - a.x * b.z,
+		a.x * b.y - a.y * b.x
+	);
+}
+
+LongVectorType longvec_angle(LongVector a, LongVector b) {
+	return longvec_dot(a, b) / (longvec_magnitude(a) * longvec_magnitude(b));
+}
+
+LongVector project_vector(LongVector v, LongVector projection) {
+	return projection * (longvec_dot(v, projection) / longvec_sqrmagnitude(projection));
+}
+
+LongVector project2plane(LongVector v, LongVector plane_normal) {
+	return v - project_vector(v, plane_normal);
 }

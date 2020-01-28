@@ -2,17 +2,18 @@
 #define TEXT_INPUT_H
 #include "textmesh.h"
 
-void character_callback(GLFWwindow*, unsigned int);
-void key_callback(GLFWwindow*, int, int, int, int);
-
 class TextInput :
 	public Textmesh
 {
 public:
-	unsigned int cursor_position = 0;
+	unsigned int pointer = 0;
 
 	TextInput(Font, GLFWwindow*);
 	TextInput(std::string, Font, GLFWwindow*);
+
+	void insert(char);
+	void inc_poiter();
+	void dec_poiter();
 
 protected:
 	std::vector<float> get_lines() override;

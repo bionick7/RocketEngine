@@ -72,6 +72,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>D:\Programing\C++\RocketEngine2\external\custom;$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -93,10 +96,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Programing\C++\RocketEngine2;D:\Programing\C++\RocketEngine2\external\custom;D:\Programing\C++\RocketEngine2\external\glm-0.9.7.1;D:\Programing\C++\RocketEngine2\external\glfw-3.1.2\include;D:\Programing\C++\RocketEngine2\external\glew-1.13.0\include;D:\Programing\C++\RocketEngine2\external\bullet-2.81-rev2613\src;D:\Programing\C++\RocketEngine2\external\assimp-3.0.1270\include;D:\Programing\C++\RocketEngine2\external\AntTweakBar-1.16\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\custom;$(SolutionDir)external\glm-0.9.7.1;$(SolutionDir)external\glfw-3.1.2\include;$(SolutionDir)external\glew-1.13.0\include;$(SolutionDir)external\bullet-2.81-rev2613\src;$(SolutionDir)external\assimp-3.0.1270\include;$(SolutionDir)external\AntTweakBar-1.16\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>D:\Programing\C++\RocketEngine2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;GLEW_1130.lib;glfw3.lib;ANTTWEAKBAR_116_OGLCORE_GLFW.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -141,13 +144,17 @@
     <ClCompile Include="source\graphics\circle.cpp" />
     <ClCompile Include="source\graphics\polygone.cpp" />
     <ClCompile Include="source\graphics\shape.cpp" />
+    <ClCompile Include="source\graphics\UI\console.cpp" />
+    <ClCompile Include="source\graphics\UI\graph.cpp" />
     <ClCompile Include="source\graphics\UI\textinput.cpp" />
     <ClCompile Include="source\graphics\UI\textmesh.cpp" />
+    <ClCompile Include="source\graphics\UI\ui_canvas.cpp" />
     <ClCompile Include="source\graphics\UI\ui_element.cpp" />
     <ClCompile Include="source\graphics\UI\vectorgraphic.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\physics\Celestial.cpp" />
     <ClCompile Include="source\physics\Orbiter.cpp" />
+    <ClCompile Include="source\setups.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\shader.hpp" />
@@ -163,6 +170,8 @@
     <ClInclude Include="source\graphics\circle.h" />
     <ClInclude Include="source\graphics\polygone.h" />
     <ClInclude Include="source\graphics\shape.h" />
+    <ClInclude Include="source\graphics\UI\console.h" />
+    <ClInclude Include="source\graphics\UI\graph.h" />
     <ClInclude Include="source\graphics\UI\textinput.h" />
     <ClInclude Include="source\graphics\UI\textmesh.h" />
     <ClInclude Include="source\graphics\UI\ui_canvas.h" />
@@ -170,6 +179,7 @@
     <ClInclude Include="source\graphics\UI\vectorgraphic.h" />
     <ClInclude Include="source\physics\Celestial.h" />
     <ClInclude Include="source\physics\Orbiter.h" />
+    <ClInclude Include="source\setups.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
