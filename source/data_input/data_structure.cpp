@@ -1,7 +1,7 @@
 #include "data_structure.h"
 
 
-namespace cfg {
+namespace io {
 
 	std::string to_string(std::string ws) {
 		const std::string s(ws.begin(), ws.end());
@@ -33,11 +33,21 @@ namespace cfg {
 
 		if (parent != NULL) {
 			parent->children.insert({ get_name(), this });
+			for (DSEnum e : parent->active_enums)
+				active_enums.push_back(e);
 		}
 	}
 
 	DataStructure::~DataStructure()
 	{
+		for (std::pair<std::string, DataStructure*> pair : children) {
+			delete pair.second;
+		}
+		for (std::pair<std::string, std::vector<DataStructure*>> pair : children_arr) {
+			for (DataStructure* item : pair.second) {
+				delete item;
+			}
+		}
 	}
 
 	unsigned DataStructure::get_recursion_depht() {
@@ -46,67 +56,33 @@ namespace cfg {
 		return parent->get_recursion_depht() + 1;
 	}
 
-#pragma region get_set_content
-
-	int DataStructure::get_int(std::string field_name, int def, bool quiet) {
-		try {
-			return map_int32.at(field_name);
-		}
-		catch (std::out_of_range) {
-			if (!quiet) {
-				std::cerr << "No such field: " << to_string(field_name) << std::endl;
-			}
-			return def;
-		}
+#define SETGET_ROUTINE(TYPE, SETNAME, GETNAME, MAP) \
+	void DataStructure::SETNAME(std::string field_name, TYPE value) {\
+		MAP.insert({ field_name, value });\
+	}\
+	TYPE DataStructure::GETNAME(std::string field_name, TYPE def, bool quiet) {\
+		try {\
+			return MAP.at(field_name);\
+		}\
+		catch (std::out_of_range) {\
+			if (!quiet) {\
+				std::cerr << "No such field: \"" << to_string(field_name) << "\" in " << get_name() << " (" << parent->get_name() << "); " << file_path << std::endl;\
+			}\
+			return def;\
+		}\
 	}
 
-	double DataStructure::get_double(std::string field_name, double def, bool quiet) {
-		try {
-			return map_float64.at(field_name);
-		}
-		catch (std::out_of_range) {
-			if (!quiet) {
-				std::cerr << "No such field: " << to_string(field_name) << std::endl;
-			}
-			return def;
-		}
-	}
+	SETGET_ROUTINE(int, set_int, get_int, map_int32)
+	SETGET_ROUTINE(double, set_double, get_double, map_float64)
+	SETGET_ROUTINE(bool, set_bool, get_bool, map_bools)
+	SETGET_ROUTINE(std::string, set_string, get_string, map_string)
+	SETGET_ROUTINE(LongVector, set_vector, get_vector, map_vectors)
 
-	bool DataStructure::get_bool(std::string field_name, bool def, bool quiet) {
-		try {
-			return map_bools.at(field_name);
-		}
-		catch (std::out_of_range) {
-			if (!quiet) {
-				std::cerr << "No such field: " << to_string(field_name) << std::endl;
-			}
-			return def;
-		}
-	}
-
-	std::string DataStructure::get_string(std::string field_name, std::string def, bool quiet) {
-		try {
-			return map_string.at(field_name);
-		}
-		catch (std::out_of_range) {
-			if (!quiet) {
-				std::cerr << "No such field: " << to_string(field_name) << std::endl;
-			}
-			return def;
-		}
-	}
-
-	LongVector DataStructure::get_vector(std::string field_name, LongVector def, bool quiet) {
-		try {
-			return map_vectors.at(field_name);
-		}
-		catch (std::out_of_range) {
-			if (!quiet) {
-				std::cerr << "No such field: " << to_string(field_name) << std::endl;
-			}
-			return def;
-		}
-	}
+	SETGET_ROUTINE(std::vector<int>, set_int_arr, get_int_arr, map_int32_arr)
+	SETGET_ROUTINE(std::vector<double>, set_double_arr, get_double_arr, map_float64_arr)
+	SETGET_ROUTINE(std::vector<bool>, set_bool_arr, get_bool_arr, map_bools_arr)
+	SETGET_ROUTINE(std::vector<std::string>, set_string_arr, get_string_arr, map_string_arr)
+	SETGET_ROUTINE(std::vector<LongVector>, set_vector_arr, get_vector_arr, map_vectors_arr)
 
 	DataStructure* DataStructure::get_child(std::string field_name, bool quiet) {
 		try {
@@ -116,68 +92,12 @@ namespace cfg {
 			if (!quiet) {
 				std::cerr << "No such child: " << to_string(field_name) << std::endl;
 			}
-			return NULL;
+			return nullptr;
 		}
 	}
 
-	std::vector<int> DataStructure::get_int_arr(std::string field_name, std::vector<int> def, bool quiet) {
-		try {
-			return map_int32_arr.at(field_name);
-		}
-		catch (std::out_of_range) {
-			if (!quiet) {
-				std::cerr << "No such field: " << to_string(field_name) << std::endl;
-			}
-			return def;
-		}
-	}
-
-	std::vector<double> DataStructure::get_double_arr(std::string field_name, std::vector<double> def, bool quiet) {
-		try {
-			return map_float64_arr.at(field_name);
-		}
-		catch (std::out_of_range) {
-			if (!quiet) {
-				std::cerr << "No such field: " << to_string(field_name) << std::endl;
-			}
-			return def;
-		}
-	}
-
-	std::vector<bool> DataStructure::get_bool_arr(std::string field_name, std::vector<bool> def, bool quiet) {
-		try {
-			return map_bools_arr.at(field_name);
-		}
-		catch (std::out_of_range) {
-			if (!quiet) {
-				std::cerr << "No such field: " << to_string(field_name) << std::endl;
-			}
-			return def;
-		}
-	}
-
-	std::vector<std::string> DataStructure::get_string_arr(std::string field_name, std::vector<std::string> def, bool quiet) {
-		try {
-			return map_string_arr.at(field_name);
-		}
-		catch (std::out_of_range) {
-			if (!quiet) {
-				std::cerr << "No such field: " << to_string(field_name) << std::endl;
-			}
-			return def;
-		}
-	}
-
-	std::vector<LongVector> DataStructure::get_vector_arr(std::string field_name, std::vector<LongVector> def, bool quiet) {
-		try {
-			return map_vectors_arr.at(field_name);
-		}
-		catch (std::out_of_range) {
-			if (!quiet) {
-				std::cerr << "No such field: " << to_string(field_name) << std::endl;
-			}
-			return def;
-		}
+	void DataStructure::set_child(std::string field_name, DataStructure* value) {
+		children.insert({ field_name, value });
 	}
 
 	std::vector<DataStructure*> DataStructure::get_child_arr(std::string field_name, bool quiet) {
@@ -191,56 +111,9 @@ namespace cfg {
 			return std::vector<DataStructure*>();
 		}
 	}
-
-	void DataStructure::set_int(std::string field_name, int value) {
-		map_int32.insert({ field_name, value });
-	}
-
-	void DataStructure::set_double(std::string field_name, double value) {
-		map_float64.insert({ field_name, value });
-	}
-
-	void DataStructure::set_bool(std::string field_name, bool value) {
-		map_bools.insert({ field_name, value });
-	}
-
-	void DataStructure::set_string(std::string field_name, std::string value) {
-		map_string.insert({ field_name, value });
-	}
-
-	void DataStructure::set_vector(std::string field_name, LongVector value) {
-		map_vectors.insert({ field_name, value });
-	}
-
-	void DataStructure::set_child(std::string field_name, DataStructure* value) {
-		children.insert({ field_name, value });
-	}
-
-	void DataStructure::set_int_arr(std::string field_name, std::vector<int> value) {
-		map_int32_arr.insert({ field_name, value });
-	}
-
-	void DataStructure::set_double_arr(std::string field_name, std::vector<double> value) {
-		map_float64_arr.insert({ field_name, value });
-	}
-
-	void DataStructure::set_bool_arr(std::string field_name, std::vector<bool> value) {
-		map_bools_arr.insert({ field_name, value });
-	}
-
-	void DataStructure::set_string_arr(std::string field_name, std::vector<std::string> value) {
-		map_string_arr.insert({ field_name, value });
-	}
-
-	void DataStructure::set_vector_arr(std::string field_name, std::vector<LongVector> value) {
-		map_vectors_arr.insert({ field_name, value });
-	}
-
 	void DataStructure::set_child_arr(std::string field_name, std::vector<DataStructure*> value) {
 		children_arr.insert({ field_name, value });
 	}
-
-#pragma endregion
 
 	std::string DataStructure::get_content_string() {
 		std::stringstream str;
@@ -323,7 +196,7 @@ namespace cfg {
 
 	void DataStructure::set_name(std::string value) {
 		name = value;
-		if (parent != NULL) {
+		if (parent != nullptr) {
 			unsigned short i = 0;
 			while (parent->children.find(value) == parent->children.end())
 			{
@@ -343,4 +216,8 @@ namespace cfg {
 	std::string DataStructure::get_directory() {
 		return file_path.substr(0, file_path.find_last_of('\\'));
 	}
+}
+
+void print_datastructure(io::DataStructure* d) {
+	std::cout << d->get_content_string();
 }

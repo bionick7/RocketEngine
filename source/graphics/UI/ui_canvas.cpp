@@ -17,7 +17,8 @@ void UICanvas::set_active_element(UIElement* new_active) {
 	} else if (Console* active_console = dynamic_cast<Console*>(active)) {
 		current_focus_input = active_console->input;
 	} else {
-		current_focus_input = NULL;
+		// Stick with the last
+		//current_focus_input = NULL;
 	}
 }
 
@@ -25,9 +26,8 @@ UIElement* UICanvas::get_active_element() {
 	return active;
 }
 
-UICanvas::UICanvas(GLFWwindow *window_ptx, Camera *cam) {
+UICanvas::UICanvas(GLFWwindow *window_ptx) {
 	window = window_ptx;
-	camera = cam;
 	instance = this;
 	GLFWcharfun char_callback_func = [](GLFWwindow* w, unsigned int _0) {
 		instance->character_callback(w, _0);
@@ -55,7 +55,7 @@ void UICanvas::draw(double delta_t) {
 		active->set_transform(mouse_position.x - offset.x, mouse_position.y - offset.y, active->width, active->height);
 	}
 	for (UIElement* element : elements) {
-		element->update(delta_t, window, camera);
+		element->update(delta_t, window);
 	}
 }
 
@@ -77,7 +77,7 @@ void UICanvas::key_callback(GLFWwindow* window, int key, int scancode, int actio
 			current_focus_input->set_content(cont);
 		}
 		else if (key == GLFW_KEY_DELETE) {
-			cont = cont.substr(0, pos) + cont.substr(pos + 1);
+			cont = cont.substr(0, pos) + cont.substr(pos + 1); // Not checked
 			current_focus_input->set_content(cont);
 		}
 		else if (key == GLFW_KEY_ENTER) {

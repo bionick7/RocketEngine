@@ -2,7 +2,7 @@
 
 bool is_initialized = false;
 
-Textmesh::Textmesh(std::string _content, Font _font) {
+Textmesh::Textmesh(std::string _content, Font* _font) {
 	if (!is_initialized) {
 		is_initialized = true;
 	}
@@ -38,7 +38,7 @@ std::vector<float> Textmesh::get_lines() {
 	// Fill buffers
 	for (unsigned int i = 0; i < length; i++) {
 		if (content[i] >= 32) {
-			unsigned char* data = assets->default_vector_font.data[content[i]];
+			unsigned char* data = font->data[content[i]];
 			if ((tp.x + 1) * (1 + font_settings.spacing_x) * font_settings.font_size / font_settings.ratio <= width && (tp.y + 1) * (1 + font_settings.spacing_y) * font_settings.font_size <= height) {
 				for (int j = 0; *(data + j) != 0; j += 4) {
 					lines.push_back(((*(data + j + 0) - 1) / 254.0f + tp.x * (1 + font_settings.spacing_x)) * font_settings.font_size / font_settings.ratio);

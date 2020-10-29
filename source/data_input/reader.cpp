@@ -2,13 +2,10 @@
 
 using namespace std;
 
-namespace cfg {
+namespace io {
 
 	string base_dir = "";
-
-	//std::string to_string(std::wstring inp) {
-	//
-	//}
+	DataStructure* error_ds = nullptr;
 
 	void replace_character(string* reference_string, char char_1, char char_2) {
 		string temp_str = *reference_string;
@@ -35,9 +32,10 @@ namespace cfg {
 		return inp.find(match) != -1;
 	}
 
-	bool initialize(char** command_args) {
+	bool initialize(int arguments_num, char** command_args) {
+		error_ds = new DataStructure("fail", nullptr, "/");
+
 		char basepath[255] = "";
-		std::cout << *(command_args[0]) << std::endl;
 		_fullpath(basepath, command_args[0], sizeof(basepath));
 		std::string base_path_string(basepath);
 		base_dir = base_path_string.substr(0, base_path_string.find_last_of('\\'));
@@ -56,33 +54,43 @@ namespace cfg {
 			base = base.substr(0, base.find_last_of('\\'));
 		}
 
-		return base + "\\" + inp;
+		return base + '\\' + inp;
 	}
 
-	DataStructure* read_file(string filename, string base, string ds_name, DataStructure* parent, bool full_path) {
-
+	vector<string> read_lines_from_file(string filename, string base, bool* success_ptx, bool full_path) {
 		if (!full_path) {
 			filename = parse_file_path(filename, base);
 		}
-		
+
 		vector<string> all_lines = vector<string>();
 		string line;
 
 		//std::cout << "Reading: " << filename << std::endl;
 		ifstream file(filename, ios::in);
-		if (file.is_open())
-		{
+		*success_ptx = file.is_open();
+		if (*success_ptx) {
 			while (std::getline(file, line))
 			{
 				all_lines.push_back(line);
 			}
 			file.close();
 		}
+		return all_lines;
+	}
+
+	DataStructure* read_file(string filename, string base, string ds_name, DataStructure* parent, bool full_path) {
+		bool success_ptx;
+		auto text = read_lines_from_file(filename, base, &success_ptx, full_path);
+		if (success_ptx) {
+			if (!full_path) {
+				filename = parse_file_path(filename, base);
+			}
+			return analyze_text(text, ds_name, parent, filename);
+		}
 		else {
 			cerr << "couldn't open " << filename << endl;
+			return error_ds;
 		}
-
-		return analyze_text(all_lines, ds_name, parent, filename);
 	}
 
 	DataStructure* analyze_text(vector<string> text_lines, string name, DataStructure* parent, string path) {
@@ -144,6 +152,8 @@ namespace cfg {
 	}
 
 	DataStructure* analyze_structure(vector<string> text_lines, string name, DataStructure* parent, string path) {
+#define ERR_PRINT(msg) \
+		std::cerr << "an error occured while reading " << parent->get_name() << " > " << name << " in \"" << path << "\" around line" << current_line << ": " << msg << std::endl;
 		//For each command, do this:
 		DataStructure* res = new DataStructure(name, parent, path);
 		unsigned current_line = 0;
@@ -172,13 +182,14 @@ namespace cfg {
 			if (line[0] == '>') {
 				// names are analyzed for special characters too
 
-				string ch_name = std::to_string(counter++) + parse_string(line.substr(1));
+				string raw_name = parse_string(line.substr(1));  // Needed for special commands like ENUM
+				string ch_name = std::to_string(counter++) + raw_name;
 				char recursion = 0x01;
 				vector<string> _lines_ = vector<string>();
 				for (current_line++; recursion > 0; current_line++) {
 					// Check the size of the DataStructure
 					if (current_line >= text_lines.size()) {
-						cerr << "Not matching \">\" with \"<\" " << endl;
+						ERR_PRINT("Not matching \">\" with \"<\" ")
 						//Throw("Not matching \">\" with \"<\" ", file_name, current_line + beginning_line);
 					}
 					else if (text_lines[current_line][0] == '>') {
@@ -189,7 +200,16 @@ namespace cfg {
 					}
 					_lines_.push_back(text_lines[current_line]);
 				}
-				analyze_structure(_lines_, ch_name, res, path);
+				if (raw_name == "ENUM") {
+					DataStructure* temp = analyze_structure(_lines_, ch_name, nullptr, path);
+					res->active_enums.push_back({
+						temp->get_string("name"),
+						temp->get_string_arr("values")
+					});
+				}
+				else {
+					analyze_structure(_lines_, ch_name, res, path);
+				}
 				goto NOVALUE;
 			}
 			if (line[line.size() - 1] == '<') {
@@ -208,16 +228,16 @@ namespace cfg {
 
 			//Get the number, if array
 			if (line.size() < 4)
-				cerr << "index (3) out of range" << endl;
+				ERR_PRINT("index (3) out of range")
 			if (line[3] == '*') {
 				isarray = true;
 				if (!contains(line, "-"))
-					cerr << "must contain '-'" << endl;
+					ERR_PRINT("must contain '-'")
 				try {
 					written_count = line.substr(4, line.find_first_of('-') - 4);
 				}
 				catch (out_of_range) {
-					cerr << line + " is not valid" << endl;
+					ERR_PRINT(line + " is not valid")
 				}
 				count = parse_int32(written_count);
 			}
@@ -232,7 +252,7 @@ namespace cfg {
 				if (indicator_type == "int") {
 					vector<int> temp_arr = vector<int>(count);
 					for (int j = 0; j < count; j++) {
-						temp_arr[j] = parse_int32(content[j]);
+						temp_arr[j] = parse_int32(content[j], res->active_enums);
 					}
 					res->set_int_arr(item_name, temp_arr);
 				}
@@ -266,7 +286,7 @@ namespace cfg {
 				else if (indicator_type == "vc3") {
 					vector<LongVector> temp_arr = vector<LongVector>(count);
 					for (int j = 0; j < count; j++) {
-						temp_arr[j] = parse_vector(content[j]);
+						temp_arr[j] = parse_vector(content[j], ';');
 					}
 					res->set_vector_arr(item_name, temp_arr);
 					break;
@@ -280,7 +300,7 @@ namespace cfg {
 					res->set_child_arr(item_name, temp_arr);
 				}
 				else {
-					cerr << "There is no prefix " << indicator_type << endl;
+					ERR_PRINT("There is no prefix " << indicator_type)
 				}
 				current_line += count + 1;
 			}
@@ -297,7 +317,7 @@ namespace cfg {
 					content = line.substr(line.find_first_of('=') + 1);
 				}
 				if (indicator_type == "int") {
-					res->set_int(item_name, parse_int32(content));
+					res->set_int(item_name, parse_int32(content, res->active_enums));
 				}
 				else if (indicator_type == "f64") {
 					res->set_double(item_name, parse_float64(content));
@@ -314,14 +334,14 @@ namespace cfg {
 					}
 				}
 				else if (indicator_type == "vc3") {
-					res->set_vector(item_name, parse_vector(content));
+					res->set_vector(item_name, parse_vector(content, ';'));
 				}
 				else if (indicator_type == "dat") {
 					string f_path = parse_file_path(parse_string(content), res->directory_path);
 					res->set_child(item_name, read_file(f_path, f_path, item_name, res, true));
 				}
 				else {
-					cerr << "There is no prefix: " << indicator_type << endl;
+					ERR_PRINT("There is no prefix " << indicator_type)
 				}
 				current_line++;
 			}
@@ -329,15 +349,14 @@ namespace cfg {
 		NOVALUE:
 			// Safty stuff
 			if (++safty_counter >= 100000) {
-				cerr << "Infinite loop" << endl;
+				ERR_PRINT("Infinite Loop")
 				return res;
 			}
 		}
 		return res;
 	}
 
-
-	int parse_int32(std::string content) {
+	int parse_int32(std::string content, std::vector<DSEnum> active_enums) {
 		int res = 0;
 		bool negative = false;
 		if (content.size() > 0 && content[0] == '-') {
@@ -357,12 +376,32 @@ namespace cfg {
 				res += mant;
 			}
 		}
-		else {
+		else if ('0' <= content[0] && content[0] <= '9') {
 			try {
 				res = stoi(content);
 			}
 			catch (invalid_argument) {
 				cerr << "\"" << content << "\" is not a valid integer" << endl;
+				res = 0;
+			}
+		}
+		else {
+			res = -1;
+			content = parse_string(content);
+			int split = content.find('/');
+			string name = content.substr(0, split);
+			string value = content.substr(split + 1);
+			for (DSEnum e : active_enums) {
+				if (e.name == name) {
+					for (int i = 0; i < e.values.size(); i++) {
+						if (value == e.values[i]) {
+							res = i;
+						}
+					}
+				}
+			}
+			if (res < 0) {
+				cerr << "\"" << content << "\" cannot be interpreted as an integer or enum" << endl;
 				res = 0;
 			}
 		}
@@ -430,10 +469,10 @@ namespace cfg {
 		return content;
 	}
 
-	LongVector parse_vector(std::string content) {
+	LongVector parse_vector(std::string content, char divisor) {
 		try {
-			size_t semi1 = content.find_first_of(';');
-			size_t semi2 = content.find_last_of(';');
+			size_t semi1 = content.find_first_of(divisor);
+			size_t semi2 = content.find_last_of(divisor);
 
 			double x = parse_float64(content.substr(0, semi1)),
 				   y = parse_float64(content.substr(semi1 + 1, semi2-semi1)),
@@ -442,7 +481,7 @@ namespace cfg {
 			return LongVector(x, y, z);
 		}
 		catch (invalid_argument) {
-			cerr << "\"" << content << "\" is not a valid integer" << endl;
+			cerr << "\"" << content << "\" is not a valid scalar" << endl;
 			return LongVector(0.0, 0.0, 0.0);
 		}
 	}

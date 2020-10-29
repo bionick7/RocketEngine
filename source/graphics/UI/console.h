@@ -1,16 +1,20 @@
 #pragma once
 #include "ui_element.h"
+#include "console_logic.h"
 #include "textinput.h"
+#include "Blackboard.h"
 
-std::string last_lines(std::string, unsigned);
+std::string last_lines(std::string, int);
+
+extern std::string console_text;
 
 class Console :
 	public UIElement
 {
 public:
-	Console(Font, GLFWwindow*);
+	Console(Font*, GLFWwindow*);
 
-	void update(double, GLFWwindow*, Camera*) override;
+	void update(double, GLFWwindow*) override;
 	void recalculate() override;
 	void set_transform(int, int, int, int, bool=false) override;
 
@@ -18,8 +22,10 @@ public:
 	Textmesh* archieved;
 
 private:
-	unsigned short archieved_lines = 1;
+	unsigned max_lines = 5;
+	unsigned line_height = 1;
 
-	std::string interprete(std::string);
+	void recalculate_internal();
+	void interprete(std::string);
 };
 

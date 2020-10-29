@@ -1,14 +1,14 @@
-#ifndef DATASTRUCTURE_H
-#define DATASTRUCTURE_H
+#pragma once
+#include "debug.h"
 
-#include "../core/debug.h"
-#include "../core/math_tools.h"
-
-namespace cfg {
-	std::string to_string(
-	);
+namespace io {
 	std::string to_string(std::string);
 	std::string to_string(LongVector);
+
+	struct DSEnum {
+		std::string name = "";
+		std::vector<std::string> values = std::vector<std::string>();
+	};
 
 	class DataStructure
 	{
@@ -58,6 +58,8 @@ namespace cfg {
 		std::string file_path;
 		std::string directory_path;
 
+		std::vector<DSEnum> active_enums = std::vector<DSEnum>();
+
 	private:
 		std::map<std::string, int> map_int32;
 		std::map<std::string, double> map_float64;
@@ -76,4 +78,5 @@ namespace cfg {
 		std::string name;
 	};
 }
-#endif // DATASTRUCTURE_H
+
+void print_datastructure(io::DataStructure*);

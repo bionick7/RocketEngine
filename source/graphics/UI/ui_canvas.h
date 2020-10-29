@@ -1,12 +1,13 @@
+#pragma once
+#include "asset_manager.h"
+#include "settings.h"
 #include "console.h"
 #include "graph.h"
-#ifndef CANVAS_H
-#define CANVAS_H
 
 class UICanvas
 {
 public:
-	UICanvas(GLFWwindow*, Camera*);
+	UICanvas(GLFWwindow*);
 	void draw(double);
 	void add(UIElement*);
 
@@ -24,7 +25,6 @@ public:
 
 private:
 	GLFWwindow* window;
-	Camera* camera;
 
 	std::vector<UIElement*> elements;
 	UIElement* active;
@@ -35,5 +35,3 @@ private:
 	bool dragging;
 	Screenpos offset;
 };
-
-#endif // !CANVAS_H

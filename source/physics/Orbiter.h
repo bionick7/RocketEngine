@@ -1,13 +1,19 @@
 #ifndef ORBITER_H
 #define ORBITER_H
-#include "../graphics/Camera.h"
-#include "../graphics/polygone.h"
+#include "Camera.h"
+#include "polygone.h"
+#include "CameraContainer.h"
 
+extern double time_scale;
+
+class Orbiter;
 
 struct CelestialEssentials {
-	LongVector position;
 	double mu;
 	bool is_valid;
+	Orbiter* ptx;
+	LongVector position();
+	LongQuaternion reference;
 };
 
 struct OrbitData {
@@ -33,42 +39,35 @@ struct OrbitSituation {
 	InternalEllipsisData ellipse;
 };
 
-class Orbiter abstract
+class Orbiter abstract : public Agent
 {
 friend class Celestial;
 public:
-	Orbiter(cfg::DataStructure*);
+	Orbiter(io::DataStructure*, Orbiter*);
 	~Orbiter();
-
-	void virtual draw(Camera*);
 
 	CelestialEssentials parent;
 	OrbitData orbit;
 
 	Polygone* polygone;
 
-	void virtual update(double);
+	void virtual physics_step(double) override;
+	void virtual orbiter_step(double, agent_id);
+	void virtual draw_step(double) override;
 
-	std::string name = "";
-
-	glm::vec3 meta_position;
-	double current_anomaly;
-	LongVector position;
+	glm::vec3 meta_position = glm::vec3();
+	double current_anomaly = 0.0;
 
 	OrbitSituation get_situation();
 
 protected:
-	LongVector center_position;
-
-	const double position_scale = 5e-10;
-	const double time_scale = 2.3e7;
-
-private:
-	const unsigned points_number = 100;
+	LongVector center_position = LongVector(0.0, 0.0, 0.0);
 	InternalEllipsisData ellipsis_data;
-	point_array_t get_points(bool);
+	const unsigned points_number = 100;
+	point_array_t get_points(bool, double);
 };
 
+// needed?
 extern std::vector<Orbiter*> all_orbiters;
 
 // double get_anomaly(OrbitSituation, double);

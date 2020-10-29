@@ -19,8 +19,16 @@ void print_matrix(glm::mat4x4 matrix) {
 	}
 }
 
-void print_vector(glm::vec3 vec) {
+void print_vector(LongVector vec) {
 	cout << "( " << to_string(vec.x) << ", " << to_string(vec.y) << ", " << to_string(vec.z) << " )" << endl;
+}
+
+void print_vector(glm::vec4 vec) {
+	cout << "( " << to_string(vec.x) << ", " << to_string(vec.y) << ", " << to_string(vec.z) << ", " << to_string(vec.w) << " )" << endl;
+}
+
+void print_vector(glm::vec3 vec) {
+	print_vector(LongVector(vec));
 }
 
 void print_text(string txt) {

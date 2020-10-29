@@ -1,85 +1,53 @@
 #include "polygone.h"
 
-glm::vec3 get_pos(glm::mat4 vp_matrix, glm::vec3 world_position, float aspect_ratio);
 
-Polygone::Polygone() {
-	shader = assets->get_shader("Simple");
+Polygone::Polygone(LineType plinetype) {
+	shader = ((Shader*)assets->get(io::ResourceType::SHADER, "Simple"))->ID;
+	line_type = plinetype;
 
-	matrix_ID = glGetUniformLocation(shader, "VP");
+	vp_matrix_ID = glGetUniformLocation(shader, "VP");
 	color_ID = glGetUniformLocation(shader, "Color");
+
+	glGenBuffers(1, &vertex_buffer);
 }
 
 Polygone::~Polygone() {
-
-}
-
-void Polygone::generate_point_array(point_array_t value) {
-	vertex_buffer_size = value.size();
-	vertexbuffers.clear();
-
-	GLuint* vertexbuffers_ptxs = new GLuint[value.size()];
-
-	glGenBuffers(vertex_buffer_size, vertexbuffers_ptxs);
-
-	GLuint* vertex_arrays = new GLuint[vertex_buffer_size];
-	glGenVertexArrays(vertex_buffer_size, vertex_arrays);
-
-	for (unsigned i = 0; i < vertex_buffer_size; i++) {
-		glBindVertexArray(*(vertex_arrays + i));
-		GLfloat vertex_buffer_data[6];
-
-		unsigned other_index = (i == vertex_buffer_size - 1) ? 0 : i + 1;
-		*(vertex_buffer_data + 0) = value[i].x;
-		*(vertex_buffer_data + 1) = value[i].y;
-		*(vertex_buffer_data + 2) = value[i].z;
-		*(vertex_buffer_data + 3) = value[other_index].x;
-		*(vertex_buffer_data + 4) = value[other_index].y;
-		*(vertex_buffer_data + 5) = value[other_index].z;		
-
-		glBindBuffer(GL_ARRAY_BUFFER, *(vertexbuffers_ptxs + i));
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer_data), vertex_buffer_data, GL_STREAM_DRAW);
-
-		vertexbuffers.push_back(*(vertexbuffers_ptxs + i));
-	}
+	glDeleteBuffers(1, &vertex_buffer);
 }
 
 void Polygone::set_point_array(point_array_t value) {
-	vertex_buffer_size = value.size();
-
-	for (unsigned i = 0; i < vertex_buffer_size; i++) {
-		GLfloat vertex_buffer_data[6];
-
-		unsigned other_index = (i == vertex_buffer_size - 1) ? 0 : i + 1;
-		*(vertex_buffer_data + 0) = value[i].x;
-		*(vertex_buffer_data + 1) = value[i].y;
-		*(vertex_buffer_data + 2) = value[i].z;
-		*(vertex_buffer_data + 3) = value[other_index].x;
-		*(vertex_buffer_data + 4) = value[other_index].y;
-		*(vertex_buffer_data + 5) = value[other_index].z;
-
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffers[i]);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertex_buffer_data), vertex_buffer_data);
+	point_count = value.size();
+	GLfloat* vertex_buffer_data = new GLfloat[3 * point_count];
+	for (unsigned i = 0; i < point_count; i++) {
+		*(vertex_buffer_data + 0 + 3 * i) = value[i].x;
+		*(vertex_buffer_data + 1 + 3 * i) = value[i].y;
+		*(vertex_buffer_data + 2 + 3 * i) = value[i].z;
 	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer_data[0]) * 3 * point_count, vertex_buffer_data, GL_STREAM_DRAW);
+	delete[] vertex_buffer_data;
 }
 
-void Polygone::draw(Camera* camera) {
-	glm::mat4 transform_matrix = camera->vp_matrix;
+void Polygone::draw(const Camera* camera, glm::mat4 transform) {
+	if (!visible) {
+		return;
+	}
+	glm::mat4 transform_matrix = camera->vp_matrix * transform;
 
 	glUseProgram(shader);
-	glUniformMatrix4fv(matrix_ID, 1, GL_FALSE, &transform_matrix[0][0]);
+	glUniformMatrix4fv(vp_matrix_ID, 1, GL_FALSE, &transform_matrix[0][0]);
 	glUniform3f(color_ID, settings->draw.r, settings->draw.g, settings->draw.b);
 
 	glEnableVertexAttribArray(0);
-	for (unsigned i = 0; i < vertex_buffer_size; i++) {
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffers[i]);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		glDrawArrays(GL_LINES, 0, 2);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	switch (line_type)
+	{
+	case CONTINUOUS: glDrawArrays(GL_LINE_STRIP, 0, point_count); break;
+	case CLOSED:	 glDrawArrays(GL_LINE_LOOP,	 0, point_count); break;
+	case DASHED:	 glDrawArrays(GL_LINES,		 0, point_count); break;
+	default: break;
 	}
 	glDisableVertexAttribArray(0);
-}
-
-
-glm::vec3 get_pos(glm::mat4 vp_matrix, glm::vec3 world_position, float aspect_ratio) {
-	glm::vec4 world_pos = vp_matrix * glm::vec4(world_position, 1);
-	return glm::vec3(world_pos.x * .1f, world_pos.y * .1f, -1);
 }

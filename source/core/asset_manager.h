@@ -1,44 +1,50 @@
-#ifndef ASSET_MANAGER_H
-#define ASSET_MANAGER_H
+#pragma once
 
-#include "../data_input/reader.h"
+#include "data_input/reader.h"
+#include "resource.h"
 #include "../../common/shader.hpp"
 #include "../../common/texture.hpp"
+#include "data_input/mesh_resource.h"
 
-struct Font {
-	void kill();
-	GLuint Texture_ID;
-	std::string name;
-};
+class Font : public io::Resource {
+public:
+	Font();
+	Font(io::DataStructure*);
 
-struct VectorFont {
-	void kill();
+	bool deserialize(char*, int) override;
+	bool deserialize(std::istream*, int) override;
+	bool serialize(char*, int*) override;
+	bool serialize(std::ostream*, int*) override;
+	void kill() override;
+	io::ResourceType get_type() override;
+
 	unsigned char** data;
-	std::string name;
 };
 
-unsigned char** get_vector_data(std::string);
+class Shader : public io::Resource {
+public:
+	Shader();
+	Shader(io::DataStructure*);
+
+	void kill() override;
+	io::ResourceType get_type() override;
+
+	GLuint ID;
+
+	operator GLuint () { return ID; }
+};
 
 class AssetSet {
 public:
-	AssetSet(cfg::DataStructure*);
-	GLuint get_shader(std::string);
-	Font get_font(std::string);
-	VectorFont get_vector_font(std::string);
+	AssetSet(io::DataStructure*);
 
-	GLuint text_shader;
-	Font default_font;
-	VectorFont default_vector_font;
-
-	void kill_shader(std::string);
-	void kill_font(std::string);
+	io::Resource* get(io::ResourceType, std::string, bool = false);
+	io::Resource* get_default(io::ResourceType);
+	void kill(io::ResourceType, std::string);
+	std::string get_content_string();
 
 private:
-	std::vector<Font> fonts;
-	std::vector<VectorFont> vector_fonts;
-	std::map<std::string, GLuint> shaders;
+	std::map<std::string, io::Resource*>* content;
 };
 
 extern AssetSet* assets;
-
-#endif // !ASSET_MANAGER_H

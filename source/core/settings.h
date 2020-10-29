@@ -14,8 +14,6 @@
 const char volume_array_size = 2;
 const char languages_num = 3;
 
-const double deg2rad = 3.1415923565 / 180.0;
-
 struct Color {
 	Color();
 	Color(float, float, float);
@@ -25,11 +23,11 @@ struct Color {
 	float r, g, b, a;
 };
 
-Color get_color(cfg::DataStructure*, std::string);
+Color get_color(io::DataStructure*, std::string);
 
 class Settings {
 public:
-	Settings(cfg::DataStructure*);
+	Settings(io::DataStructure*);
 	Color background;
 	Color draw;
 	int line_thickness;
@@ -52,7 +50,7 @@ private:
 	
 	//std::map<std::string, std::string> translations = std::map<std::string, std::string>();
 
-	cfg::DataStructure* translation_pointers[languages_num];
+	io::DataStructure* translation_pointers[languages_num];
 	float volumes[volume_array_size];
 };
 

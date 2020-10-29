@@ -3,7 +3,7 @@
 
 const std::string init_path = "init.cfgt";
 
-UICanvas* setup_canvas(GLFWwindow*, Camera*);
+UICanvas* setup_canvas(GLFWwindow*);
 void setup_opengl();
 GLFWwindow* setup_window();
-cfg::DataStructure* setup_data(char**);
+io::DataStructure* setup_data(int, char**);

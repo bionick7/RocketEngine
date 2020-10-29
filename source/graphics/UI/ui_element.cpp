@@ -25,10 +25,6 @@ UIElement::UIElement() {
 	glGenBuffers(1, &VertexBufferID);
 	glGenBuffers(1, &UVBufferID_MatrixID);
 
-	SamplerUniformID = glGetUniformLocation(assets->text_shader, "TextureSampler");
-	ScreenSizeID = glGetUniformLocation(assets->text_shader, "ScreenSizeHlf");
-	ColorID = glGetUniformLocation(assets->text_shader, "MainColor");
-
 	draw_border = true;
 }
 
@@ -49,7 +45,7 @@ void UIElement::set_transform(int _x, int _y, int _width, int _height, bool wrap
 	recalculate();
 }
 
-void UIElement::update(double, GLFWwindow*, Camera*) {
+void UIElement::update(double, GLFWwindow*) {
 	if (recalc_flag) {
 		recalculate();
 		recalc_flag = false;
@@ -58,7 +54,7 @@ void UIElement::update(double, GLFWwindow*, Camera*) {
 	// Draw
 	glm::mat4 transform_matrix = glm::mat4(1.0f);
 
-	glUseProgram(assets->get_shader("Simple"));
+	glUseProgram(((Shader*)assets->get(io::ResourceType::SHADER, "Simple"))->ID);
 	glUniformMatrix4fv(UVBufferID_MatrixID, 1, GL_FALSE, &transform_matrix[0][0]);
 	// clear area
 	glUniform3f(ColorID, settings->background.r, settings->background.g, settings->background.b);
@@ -102,7 +98,7 @@ void UIElement::setup_lines(std::vector<float> lines) {
 
 	vertex_buffer_size = lines.size() / 4;
 
-	GLuint shader = assets->get_shader("Simple");
+	GLuint shader = ((Shader*)assets->get(io::ResourceType::SHADER, "Simple"))->ID;
 	UVBufferID_MatrixID = glGetUniformLocation(shader, "VP");
 	ColorID = glGetUniformLocation(shader, "Color");
 

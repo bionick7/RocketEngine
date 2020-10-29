@@ -1,6 +1,6 @@
-#include "../Camera.h"
-#ifndef UIELEMENT_H
-#define UIELEMENT_H
+#pragma once
+#include "asset_manager.h"
+#include "Camera.h"
 
 GLPos pixel2glpos(Screenpos);
 Screenpos glpos2pixel(GLPos);
@@ -12,13 +12,13 @@ const char frame[] = {
 	0, 2, 1, 2,
 };
 
-class UIElement abstract 
+class UIElement abstract
 {
 public:
 	UIElement();
 	~UIElement();
 	void virtual set_transform(int, int, int, int, bool=false);
-	void virtual update(double, GLFWwindow*, Camera*);
+	void virtual update(double, GLFWwindow*);
 	void virtual request_recalculate();
 	bool contains_pixel(Screenpos);
 
@@ -44,9 +44,5 @@ private:
 
 	GLuint VertexBufferID;
 	GLuint UVBufferID_MatrixID;
-	GLuint SamplerUniformID;
-	GLuint ScreenSizeID;
 	GLuint ColorID;
 };
-
-#endif // !UIELEMENT_H

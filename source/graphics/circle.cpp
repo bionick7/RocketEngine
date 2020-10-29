@@ -13,58 +13,62 @@ glm::vec3 get_screen_coordinates(Screenpos screen_size, glm::vec3 gl_coordinates
 Circle::Circle(double rad)
 {
 	// Create a vertex array
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
 
 	// Get the vertex buffer from function below
 	vertex_buffer = get_quad_buffer(.5f);
 
 	// initialize shader
-	shader = assets->get_shader("Circle");
+	shader = ((Shader*)assets->get(io::ResourceType::SHADER, "Circle"))->ID;
 
-	matrix_ID = glGetUniformLocation(shader, "VP");
+	viewmatrix_ID = glGetUniformLocation(shader, "ViewMatrix");
+	projectionmatrix_ID = glGetUniformLocation(shader, "ProjectionMatrix");
+	transform_ID = glGetUniformLocation(shader, "Transform");
 	color_ID = glGetUniformLocation(shader, "Color");
-	screensize_ID = glGetUniformLocation(shader, "ScreenSizeHlf");
-	radii_ID = glGetUniformLocation(shader, "Radii");
-	midpos_ID = glGetUniformLocation(shader, "MidPos");
-	camera_right_ID = glGetUniformLocation(shader, "CameraRight_worldspace");
-	camera_up_ID = glGetUniformLocation(shader, "CameraUp_worldspace");
-	billboard_pos_ID = glGetUniformLocation(shader, "BillboardPos");
-	billboard_size_ID = glGetUniformLocation(shader, "BillboardSize");
+	backgroundcolor_ID = glGetUniformLocation(shader, "BGColor");
+	thickness_ID = glGetUniformLocation(shader, "Edge");
+	edge_ID = glGetUniformLocation(shader, "Space");
+	screenwith_ID = glGetUniformLocation(shader, "ScreenWidth");
 
-	radius = rad / 10;
+	radius = rad;
 }
 
-Circle::~Circle() { 
-	// Nothing to see here, yet
+Circle::~Circle() {
+	glDeleteBuffers(1, &vertex_buffer);
 }
 
-void Circle::draw_c(Camera* camera) {
+glm::vec3 translation(glm::mat4 m) {
+	return glm::vec3(m[3][0], m[3][1], m[3][2]);
+}
+
+void Circle::draw(const Camera* camera, glm::mat4 transform) {
+	if (!visible) {
+		return;
+	}
 	// Get circle matrix form below
-	
-	glm::vec3 CameraRight_worldspace = glm::vec3(camera->view_matrix[0][0], camera->view_matrix[1][0], camera->view_matrix[2][0]);
-	glm::vec3 CameraUp_worldspace = glm::vec3(camera->view_matrix[0][1], camera->view_matrix[1][1], camera->view_matrix[2][1]);
-	
-	glm::vec3 mid_pos = world_position;
-	glm::vec4 gl_mid_Position = camera->vp_matrix * glm::vec4(mid_pos, 1);
-	glm::vec3 screen_mid_position = get_screen_coordinates(camera->screensize, glm::vec3(gl_mid_Position));
-
-	float half_extends = radius * .5 * camera->screensize.y / (tan(camera->fov) * (gl_mid_Position.z));
-	// (need work here ^^^)
-
 	// set shader
+
+	transform = glm::scale(transform, glm::vec3(radius));
+
+	/*
+	glm::vec4 mid_point = camera->view_matrix * glm::vec4(glm::vec3(transform[3]), 1);
+	glm::mat4 transform_base = transform;
+	transform_base[3].x = 0;
+	transform_base[3].y = 0;
+	transform_base[3].z = 0;
+	glm::mat4 billboard_transform = glm::translate(glm::mat4(1), glm::vec3(mid_point));
+	glm::mat4 final_matrix = camera->projection_matrix * billboard_transform * transform_base;
+	*/
+
 	glUseProgram(shader);
-	glUniform2ui(screensize_ID, camera->screensize.x / 2, camera->screensize.y / 2);
-	float min_rad = half_extends - settings->line_thickness;
-	glUniform2f(radii_ID, min_rad * min_rad, half_extends * half_extends);
-	glUniform3f(midpos_ID, screen_mid_position.x, screen_mid_position.y, screen_mid_position.z);
 	glUniform3f(color_ID, settings->draw.r, settings->draw.g, settings->draw.b);
-	glUniformMatrix4fv(matrix_ID, 1, GL_FALSE, &camera->vp_matrix[0][0]);
-	glUniform3f(camera_right_ID, CameraRight_worldspace.x, CameraRight_worldspace.y, CameraRight_worldspace.z);
-	glUniform3f(camera_up_ID, CameraUp_worldspace.x, CameraUp_worldspace.y, CameraUp_worldspace.z);
-	glUniform3f(billboard_pos_ID, world_position.x, world_position.y, world_position.z);
-	glUniform2f(billboard_size_ID, radius, radius);
+	glUniform3f(backgroundcolor_ID, settings->background.r, settings->background.g, settings->background.b);
+	glUniform1f(edge_ID, settings->line_thickness);
+	glUniform1f(thickness_ID, settings->line_thickness);
+	glUniform1f(screenwith_ID, settings->width);
+	glUniformMatrix4fv(projectionmatrix_ID, 1, GL_FALSE, &camera->projection_matrix[0][0]);
+	glUniformMatrix4fv(viewmatrix_ID, 1, GL_FALSE, &camera->view_matrix[0][0]);
+	glUniformMatrix4fv(transform_ID, 1, GL_FALSE, &transform[0][0]);
+
 
 	// Draw the shape
 	glEnableVertexAttribArray(0);
@@ -72,6 +76,10 @@ void Circle::draw_c(Camera* camera) {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glDrawArrays(GL_TRIANGLES, 0, 2 * 3);
 	glDisableVertexAttribArray(0);
+}
+
+signed char Circle::draw_order() {
+	return 1;
 }
 
 /*

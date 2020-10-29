@@ -1,10 +1,10 @@
 #include "textinput.h"
 
-TextInput::TextInput(Font _font, GLFWwindow* window) : Textmesh::Textmesh("", _font) {
+TextInput::TextInput(Font* _font, GLFWwindow* window) : Textmesh::Textmesh("", _font) {
 	pointer = 0;
 }
 
-TextInput::TextInput(std::string _content, Font _font, GLFWwindow* window) : Textmesh::Textmesh(_content, _font) {
+TextInput::TextInput(std::string _content, Font* _font, GLFWwindow* window) : Textmesh::Textmesh(_content, _font) {
 	pointer = _content.length();
 }
 

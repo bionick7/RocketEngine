@@ -1,25 +1,30 @@
 #version 330 core
 
-in vec3 position;
+in vec2 uv;
 in vec4 gl_FragCoord;
+in float pixel_size;
 
-uniform uvec2 ScreenSizeHlf;
-uniform vec2 Radii;
+uniform float Edge;
+uniform float Space;
 uniform vec3 Color;
-uniform vec2 BillboardSize;
-uniform vec3 MidPos;
+uniform vec3 BGColor;
 
 out vec3 color;
 
 void main(){
-	float x_pos = gl_FragCoord.x - MidPos.x;
-	float y_pos = gl_FragCoord.y - MidPos.y;
-	float sqr_dist = x_pos * x_pos + y_pos * y_pos;
-	
-	if(sqr_dist < Radii.x || sqr_dist > Radii.y){
+	float draw_max = 0.5;
+	float draw_min = 0.5 - 2 * Edge/pixel_size - Space/pixel_size;
+
+	float vis_max = 0.5 - Edge/pixel_size;
+	float vis_min = 0.5 - Edge/pixel_size - Space/pixel_size;
+
+	if(dot(uv, uv) > draw_max*draw_max || dot(uv, uv) < draw_min*draw_min){
 		discard;
-		//color = Color;
-	} else {
+	}
+
+	if(dot(uv, uv) < vis_max*vis_max || dot(uv, uv) > vis_min*vis_min){
 		color = Color;
+	} else {
+		color = BGColor;
 	}
 }

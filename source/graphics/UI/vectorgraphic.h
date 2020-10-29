@@ -1,7 +1,5 @@
+#pragma once
 #include "ui_element.h"
-
-#ifndef VECTORGRAAPHIC_H
-#define VECTORGRAAPHIC_H
 
 struct Line {
 	Line(float, float, float, float);
@@ -16,5 +14,3 @@ struct Drawing {
 };
 
 void draw_drawing(Drawing*, Screenpos, pixel, pixel);
-
-#endif // !VECTORGRAAPHIC_H

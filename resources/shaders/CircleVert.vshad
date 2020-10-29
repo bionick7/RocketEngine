@@ -1,23 +1,25 @@
 #version 330 core
 
 layout(location = 0) in vec3 squareVertices;
-out vec3 position;
-out vec3 center_pos;
+out vec2 uv;
+out float pixel_size;
 
-uniform vec3 CameraRight_worldspace;
-uniform vec3 CameraUp_worldspace;
-uniform mat4 VP;
-uniform vec3 BillboardPos;
-uniform vec2 BillboardSize;
+uniform mat4 Transform;
+uniform mat4 ViewMatrix;
+uniform mat4 ProjectionMatrix;
+uniform float ScreenWidth;
 
 void main() {
-	vec3 vertexPosition_worldspace =
-    BillboardPos
-    + CameraRight_worldspace * squareVertices.x * BillboardSize.x
-    + CameraUp_worldspace * squareVertices.y * BillboardSize.y;
+	vec4 mid_point = ViewMatrix * Transform[3];
+	mat4 transform_base = Transform;
+	transform_base[3].xyzw = vec4(0, 0, 0, 1);
+	mat4 billboard_transform = mat4(1);
+	billboard_transform[3] = mid_point;
+	mat4 final_matrix = ProjectionMatrix * billboard_transform * transform_base;
+	gl_Position = final_matrix * vec4(squareVertices, 1);
+	uv = squareVertices.xy;
 
-	gl_Position = VP * vec4(vertexPosition_worldspace, 1);
-	position = gl_Position.xyz;
-	center_pos = (VP * vec4(BillboardPos, 1)).xyz;
-	
+	vec4 reference1 = final_matrix * vec4(.5, 0, 0, 1);
+	vec4 reference2 = final_matrix * vec4(-.5, 0, 0, 1);
+	pixel_size = 2 * (reference1.x - reference2.x) / (reference1.w + reference2.w) * ScreenWidth;
 }
