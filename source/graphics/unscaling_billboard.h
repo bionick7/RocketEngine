@@ -1,5 +1,5 @@
 #pragma once
-#include "shape.h"
+#include "graphic_manager.h"
 
 class Billboard:
 	public Shape
@@ -12,5 +12,6 @@ public:
 	signed char draw_order() override;
 
 private:
+	GLuint active_ID;
 };
 

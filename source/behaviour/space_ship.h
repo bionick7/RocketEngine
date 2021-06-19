@@ -1,10 +1,11 @@
 #pragma once
 #include "Orbiter.h"
 #include "mesh.h"
+#include "scene_manager.h"
 
 class SpaceShip : public Orbiter {
 public:
-	SpaceShip(io::DataStructure*, Orbiter*);
+	SpaceShip(io::DataStructurePtr, Orbiter*);
 
 	void draw_step(double) override;
 

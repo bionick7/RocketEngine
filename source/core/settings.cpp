@@ -28,43 +28,52 @@ Color::Color(unsigned int hex) {
 	a = (hex & 0x000000ff      ) / 256.0f;
 }
 
-Color get_color(io::DataStructure* ds, std::string name) {
+Color get_color(io::DataStructurePtr ds, std::string name) {
 	LongVector lv = ds->get_vector(name, LongVector(2.0, 0.0, 0.0), true);
 	if (lv.x == 2.0) {
 		std::cerr << "No such vector: " << name << std::endl;
+		return Color(0, 0, 0);
 	}
 	else {
 		return Color(lv.x, lv.y, lv.z);
 	}
 }
 
-Settings::Settings(io::DataStructure* data) {
-	io::DataStructure* graphics_structure = data->get_child("Graphics");
+Settings::Settings() {
+}
+
+void Settings::reload(io::DataStructurePtr data) {
+	render_flags = 0;
+
+	io::DataStructurePtr graphics_structure = data->get_child("Graphics");
 	background = get_color(graphics_structure, "Background color");
 	draw = get_color(graphics_structure, "Draw color");
 	line_thickness = graphics_structure->get_int("Line thickness", 3);
 	width = graphics_structure->get_int("Screen width", 800);
 	height = graphics_structure->get_int("Screen height", 600);
+	render_flags |= (!graphics_structure->get_bool("Skip postprocessing", false)) * RENDER_FLAGS_POST_PROCESSING;
 
-	io::DataStructure* audio_structure = data->get_child("Audio");
+	io::DataStructurePtr audio_structure = data->get_child("Audio");
 	volumes[SET_MASER_VOLUME] = audio_structure->get_double("Master volume");
 	volumes[SET_SFX_VOLUME] = audio_structure->get_double("SFX volume", 0.0, true);
 
-	io::DataStructure* ui_structure = data->get_child("UI");
+	io::DataStructurePtr ui_structure = data->get_child("UI");
 	std::string language_str = ui_structure->get_string("Language");
 	if (language_str == "English") {
 		language = SET_ENGLISH;
-	} else if (language_str == "Esperanto") {
+	}
+	else if (language_str == "Esperanto") {
 		language = SET_ESPERANTO;
-	} else {
+	}
+	else {
 		language = SET_NO_LANGUAGE;
 	}
-	std::vector<io::DataStructure*> translations = ui_structure->get_child_arr("translations");
+	std::vector<io::DataStructurePtr> translations = ui_structure->get_child_arr("translations");
 	for (int i = 0; i < languages_num; i++) {
 		translation_pointers[i] = translations[i];
 	}
 
-	io::DataStructure* controls_structure = data->get_child("Controls");
+	io::DataStructurePtr controls_structure = data->get_child("Controls");
 	mouse_sensitivity = controls_structure->get_double("Mouse sensitivity") / 2.0;
 	initial_fov = controls_structure->get_double("Initial fov") * deg2rad / 2.0;
 	max_vertical_angle = controls_structure->get_double("Max vertical angle") * deg2rad;
@@ -72,7 +81,7 @@ Settings::Settings(io::DataStructure* data) {
 	scroll_sensitivity = controls_structure->get_double("Scroll sensitivity") * 0.087;
 }
 
-void Settings::change_language_to(char identifyer) {
+void Settings::change_language_to(int identifyer) {
 	if (identifyer >= languages_num) {
 		std::cout << "ID is " << identifyer << ", but cannot be more than " << languages_num << std::endl;
 	} else {
@@ -84,11 +93,11 @@ std::string Settings::get_text_for(std::string identifier) {
 	return translation_pointers[language]->get_string(identifier, identifier, true);
 }
 
-float Settings::get_volume(char id) {
+float Settings::get_volume(int id) {
 	if (id >= volume_array_size) {
 		std::cout << "ID is " << id << ", but cannot be more than " << volume_array_size << std::endl;
 	}
-	float res = volumes[(std::size_t)id];
+	float res = volumes[id];
 	if (id != SET_MASER_VOLUME) res *= volumes[SET_MASER_VOLUME];
 	return res;
 }

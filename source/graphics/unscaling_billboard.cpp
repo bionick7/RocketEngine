@@ -13,8 +13,9 @@ Billboard::Billboard(float rad)
 	vertex_buffer = get_buffer(rad);
 
 	// initialize shader
-	shader = ((Shader*) assets->get(io::ResourceType::SHADER, "Simple"))->ID;
+	shader = (assets->get<Shader>(io::ResourceType::SHADER, "Simple"))->ID;
 	transform_ID = glGetUniformLocation(shader, "VP");
+	active_ID = glGetUniformLocation(shader, "_Active");
 }
 
 Billboard::~Billboard() {
@@ -35,6 +36,7 @@ void Billboard::draw(const Camera* camera, glm::mat4 transform) {
 
 	glUseProgram(shader);
 	glUniformMatrix4fv(transform_ID, 1, GL_FALSE, &matrix[0][0]);
+	glUniform1f(active_ID, 1.0);
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);

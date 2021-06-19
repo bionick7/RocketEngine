@@ -1,9 +1,10 @@
 #include "RingSystem.h"
 
-RingSystem::RingSystem(io::DataStructure* data, Orbiter* parent_ptx) : Orbiter::Orbiter(data, parent_ptx) {
+RingSystem::RingSystem(io::DataStructurePtr data, Orbiter* parent_ptx) : Orbiter::Orbiter(data, parent_ptx) {
 	width = data->get_double("width");
-	polygone->line_type = LineType::CLOSED;
+	inner = new Polygone(LineType::CLOSED);
 	outer = new Polygone(LineType::CLOSED);
+	ellipsis->visible = false;
 	og_a = ellipsis_data.a;
 	og_b = ellipsis_data.b;
 
@@ -41,26 +42,29 @@ int clamp(int in, int a, int b) {
 
 void RingSystem::draw_step(double dt) {
 	Agent::draw_step(dt);
-	Camera* cam = &global_blackboard->main_camera->large_scale;
-	float tan = orbit.semi_major_axis * position_scale / glm::distance(glm::vec3(cam->view_matrix[3]), ((center_position - global_blackboard->main_camera->get_focal_point()) * position_scale).to_float_vec());
+	Camera* cam = scene_manager->main_camera->large_scale;
+	float tan = orbit.semi_major_axis * position_scale / glm::distance(glm::vec3(cam->view_matrix[3]), ((center_position - scene_manager->main_camera->get_focal_point()) * position_scale).to_float_vec());
 
 	hatching_segments = clamp((int) (sqrt(tan) * 100.0f), 1, 150);
 
+	hatching->update(get_hatching());
+}
+
+void RingSystem::on_orbit_changed() {
+	Orbiter::on_orbit_changed();
 	ellipsis_data.a = og_a * (1 - width / (2 * orbit.semi_major_axis));
 	ellipsis_data.b = og_b * (1 - width / (2 * orbit.semi_major_axis));
-	polygone->set_point_array(get_points(true, 0.0));
+	inner->set_point_array(get_points(true, 0.0));
 
 	ellipsis_data.a = og_a * (1 + width / (2 * orbit.semi_major_axis));
 	ellipsis_data.b = og_b * (1 + width / (2 * orbit.semi_major_axis));
 	outer->set_point_array(get_points(true, 0.0));
-
-	hatching->update(get_hatching());
 }
 
 LongVector RingSystem::get_pt(double x, OrbitSituation sit, bool solution) {
 	return (sit.parent.position() + (sit.ellipse.rotation * sit.parent.reference) *
 		(LongVector(x * sit.ellipse.a, 0, sqrt(1.0 - x*x) * (solution ? -1:1) * sit.ellipse.b)) - 
-		global_blackboard->main_camera->get_focal_point()) * position_scale;
+		scene_manager->main_camera->get_focal_point()) * position_scale;
 }
 
 linearray_t RingSystem::get_hatching() {
@@ -99,6 +103,10 @@ linearray_t RingSystem::get_hatching() {
 	return res;
 }
 
-Type RingSystem::get_type() {
-	return Type::RINGSYSTEM;
+AgentType const RingSystem::get_type() {
+	return AgentType::RINGSYSTEM;
+}
+
+bool const RingSystem::is_instance_of(AgentType other) {
+	return Orbiter::is_instance_of(other) || other == get_type();
 }

@@ -1,6 +1,5 @@
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#pragma once
+#include "debug.h"
 
-GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
+GLuint load_shaders(const char * vertex_file_path,const char * fragment_file_path);
 
-#endif

@@ -4,23 +4,28 @@
 #include "CameraContainer.h"
 #include "RingSystem.h"
 #include "Orbiter.h"
+#include "space_ship.h"
+#include "mesh.h"
 
 //typedef unsigned short pixel_indx;
 
 //struct ScreenPos { pixel_indx x; pixel_indx y; };
 
-class Celestial : public Orbiter
+class Celestial : 
+	public Orbiter
 {
 public:
-	static const Type type = Type::CELESTIAL;
+	static const AgentType type = AgentType::CELESTIAL;
 
-	Celestial(io::DataStructure*, Orbiter*);
+	Celestial();
+	Celestial(io::DataStructurePtr, Orbiter*);
+	void setup(io::DataStructurePtr, Orbiter*) override;
 
 	double Mu();
 	void draw_step(double) override;
 	void orbiter_step(double, agent_id) override;
 
-	glm::mat4 get_focus_transformation() override;
+	LongMatrix4x4 get_focus_transformation() override;
 
 	double radius;
 	double mass;
@@ -36,13 +41,15 @@ public:
 	unsigned add_sattelite(Orbiter* sattelite);
 	Orbiter* const get_sattelite(unsigned position);
 
-	Type get_type() override;
+	AgentType const get_type() override;
+	bool const is_instance_of(AgentType) override;
 
 private:
 
 	std::vector<Orbiter*> sattelites;
-	void update_drawmode(Camera);
+	void update_drawmode(Camera*);
 	DrawMode draw_mode = DrawMode::CloseUp;
+	LongMatrix4x4 surface_transform;
 
 	short radius_meta;
 };

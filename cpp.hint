@@ -1,0 +1,5 @@
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define GET_ROUTINE(TYPE, NAME, MAP) TYPE DataStructure::NAME(std::string field_name, int def, bool quiet) { try { return MAP.at(field_name); } catch (std::out_of_range) { if (!quiet) { std::cerr << "No such field: " << to_string(field_name) << std::endl; } return def; } }
+#define SETGET_ROUTINE(TYPE, SETNAME, GETNAME, MAP) void DataStructure::SETNAME(std::string field_name, TYPE value) { MAP.insert({ field_name, value }); } TYPE DataStructure::GETNAME(std::string field_name, TYPE def, bool quiet) { try { return MAP.at(field_name); } catch (std::out_of_range) { if (!quiet) { std::cerr << "No such field: " << to_string(field_name) << std::endl; } return def; } }

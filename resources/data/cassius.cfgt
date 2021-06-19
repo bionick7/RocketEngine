@@ -1,0 +1,228 @@
+>ENUM
+	chr name = ORBITER_TYPE
+	chr*3-values = 
+		BODY
+		RINGS
+		ARTIFICIAL
+<
+
+>CASSIUS_CXLVIII
+	f64 Ecc = 0
+	f64 SMA = 0
+	f64 Inc = 0
+	f64 LoA = 0
+	f64 AoP = 0
+	f64 Ann = 0
+	
+	f64 radius = 500 700 000
+	f64 mass = 1 000 470 000 000 000 000 000 000 000 000
+	f64 tilt = 0
+	f64 day_length = 2 192 760
+
+	int pos = 0
+
+	>A
+		f64 Ecc = 0.30564
+		f64 SMA = 32 065 000 000
+		f64 Inc = 0.58
+		f64 LoA = 0.8376
+		f64 AoP = 0.508
+		f64 Ann = 0.0
+		
+		f64 radius = 58 232 000
+		f64 mass = 568 336 000 000 000 000 000 000 000
+		f64 tilt = 87
+		f64 day_length = 16 238
+		
+		int pos = 10
+		
+		>Rings
+			f64 Ecc = 0
+			f64 SMA = 151 000 000
+			f64 Inc = 0
+			f64 LoA = 0
+			f64 AoP = 0
+			f64 Ann = 0
+			
+			int type = ORBITER_TYPE/RINGS
+			
+			f64 width = 100 000 000
+		<
+		
+		>A1
+			f64 Ecc = 0.0041
+			f64 SMA = 421 700 000
+			f64 Inc = 0.0
+			f64 LoA = 0.0 // TBD
+			f64 AoP = 0.0 // TBD
+			f64 Ann = 0.0 // TBD
+			
+			f64 radius = 1 821 000
+			f64 mass = 89 319 200 000 000 000 000 000
+			f64 tilt = 0 // TBD
+			f64 day_length = 86 400 // TBD
+			
+			int pos = 20
+		<
+		
+		>A2
+			f64 Ecc = 0.0094
+			f64 SMA = 671 034 000
+			f64 Inc = 0.0
+			f64 LoA = 0.0 // TBD
+			f64 AoP = 0.0 // TBD
+			f64 Ann = 0.0 // TBD
+			
+			f64 radius = 1 560 000
+			f64 mass = 48 000 000 000 000 000 000 000
+			f64 tilt = 0 // TBD
+			f64 day_length = 86 400 // TBD
+			
+			int pos = 30
+		<
+		
+		>A3
+			f64 Ecc = 0.0011
+			f64 SMA = 879 412 000
+			f64 Inc = 0.0
+			f64 LoA = 0.0 // TBD
+			f64 AoP = 0.0 // TBD
+			f64 Ann = 0.0 // TBD
+			
+			f64 radius = 2 631 000
+			f64 mass = 25 190 000 000 000 000 000
+			f64 tilt = 0 // TBD
+			f64 day_length = 86 400 // TBD
+			
+			int pos = 40
+		<
+		
+		>A4
+			f64 Ecc = 0.0074
+			f64 SMA = 1 882 709 000
+			f64 Inc = 0
+			f64 LoA = 0.0 // TBD
+			f64 AoP = 0.0 // TBD
+			f64 Ann = 0.0 // TBD
+			
+			f64 radius = 2 410 000
+			f64 mass = 107 590 000 000 000 000 000
+			f64 tilt = 0 // TBD
+			f64 day_length = 86 400 // TBD
+			
+			int pos = 50
+		<
+	<
+	
+	>B
+		f64 Ecc = 0.00678
+		f64 SMA = 108 500 000 000
+		f64 Inc = 3.39
+		f64 LoA = 1.338
+		f64 AoP = 0.958
+		f64 Ann = 0.0 // TBD
+		
+		f64 radius = 6 051 800
+		f64 mass = 4 867 470 000 000 000 000 000 000
+		f64 tilt = 2.64
+		f64 day_length = -90 000
+		
+		int pos = 60
+	<
+	
+	>C
+		f64 Ecc = 0.01671
+		f64 SMA = 130 000 000 000
+		f64 Inc = 5
+		f64 LoA = 0.0 // changing
+		f64 AoP = 0.0 // changing
+		f64 Ann = 0.0 // TBD
+		
+		f64 radius = 6 371 000
+		f64 mass = 5 972 370 000 000 000 000 000 000
+		f64 tilt = 23.44
+		f64 day_length = 81 480
+		
+		int pos = 70
+		
+		>SealedTransistor
+			f64 Ecc = 0
+			f64 SMA = 6 771 000 // 400 km
+			f64 Inc = 27.3
+			f64 LoA = -1.5
+			f64 AoP = 0.5
+			f64 Ann = 0.0
+			
+			int type = ORBITER_TYPE/ARTIFICIAL
+			
+			>Visual
+				chr mesh = Big_Ship
+			<
+		<
+		
+		>C1
+			f64 Ecc = 0.05
+			f64 SMA = 135  000 000
+			f64 Inc = 12.3
+			f64 LoA = -1.5 // TBD
+			f64 AoP = 0.0 // TBD
+			f64 Ann = 0.0 // TBD
+			
+			f64 radius = 1 800 000
+			f64 mass = 73 420 000 000 000 000 000 000
+			f64 tilt = 0
+			f64 day_length = 2 360 628
+			
+			int pos = 80
+		<
+	<
+	
+	>D
+		f64 Ecc = 0.09339
+		f64 SMA = 172 557 000 000
+		f64 Inc = 1.85
+		f64 LoA = 0.864
+		f64 AoP = -1.28
+		f64 Ann = 0.0 // TBD
+		
+		f64 radius = 3 389 500
+		f64 mass = 641 712 000 000 000 000 000 000
+		f64 tilt = 25.19
+		f64 day_length = 88 632
+		
+		int pos = 50
+
+	<
+	
+	>E
+		f64 Ecc = 0.078
+		f64 SMA = 231 870 000 000
+		f64 Inc = 0 // TBD
+		f64 LoA = 0.0 // TBD
+		f64 AoP = 0.0 // TBD
+		f64 Ann = 0.0 // TBD
+		
+		f64 radius = 2 000 000
+		f64 mass = 0 // TBD
+		f64 tilt = 0 // TBD
+		f64 day_length = 86 400 // TBD
+		
+		int pos = 80
+	<
+	
+	>SEC
+		f64 Ecc = 0.0484
+		f64 SMA = 120 000 000 000 000
+		f64 Inc = 1.30
+		f64 LoA = 1.754
+		f64 AoP = 0.0
+		f64 Ann = 0.0 // TBD
+		
+		f64 radius = 72 500 000
+		f64 mass = 205 470 000 000 000 000 000 000 000 000
+		f64 tilt = 3.13
+		f64 day_length = 35 748
+		
+		int pos = 90
+	<
+<

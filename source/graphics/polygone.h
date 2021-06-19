@@ -1,5 +1,5 @@
 #pragma once
-#include "shape.h"
+#include "graphic_manager.h"
 
 typedef std::vector<glm::vec3> point_array_t;
 
@@ -22,4 +22,6 @@ public:
 	uint16_t point_count;
 
 	LineType line_type;
+private:
+	GLuint active_ID;
 };

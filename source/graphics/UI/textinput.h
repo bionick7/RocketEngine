@@ -7,12 +7,15 @@ class TextInput :
 public:
 	unsigned int pointer = 0;
 
-	TextInput(Font*, GLFWwindow*);
-	TextInput(std::string, Font*, GLFWwindow*);
+	TextInput(FontPtr, GLFWwindow*);
+	TextInput(std::string, FontPtr, GLFWwindow*);
 
 	void insert(char);
-	void inc_poiter();
+	void inc_pointer();
 	void dec_poiter();
+
+	void character_callback(GLFWwindow*, unsigned int);
+	void key_callback(GLFWwindow*, int, int, int, int);
 
 protected:
 	std::vector<float> get_lines() override;

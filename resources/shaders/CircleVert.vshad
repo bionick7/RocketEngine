@@ -2,24 +2,15 @@
 
 layout(location = 0) in vec3 squareVertices;
 out vec2 uv;
-out float pixel_size;
+out vec3 world_pos;
 
 uniform mat4 Transform;
-uniform mat4 ViewMatrix;
-uniform mat4 ProjectionMatrix;
-uniform float ScreenWidth;
+uniform mat4 VP;
 
 void main() {
-	vec4 mid_point = ViewMatrix * Transform[3];
-	mat4 transform_base = Transform;
-	transform_base[3].xyzw = vec4(0, 0, 0, 1);
-	mat4 billboard_transform = mat4(1);
-	billboard_transform[3] = mid_point;
-	mat4 final_matrix = ProjectionMatrix * billboard_transform * transform_base;
-	gl_Position = final_matrix * vec4(squareVertices, 1);
-	uv = squareVertices.xy;
 
-	vec4 reference1 = final_matrix * vec4(.5, 0, 0, 1);
-	vec4 reference2 = final_matrix * vec4(-.5, 0, 0, 1);
-	pixel_size = 2 * (reference1.x - reference2.x) / (reference1.w + reference2.w) * ScreenWidth;
+	vec4 intermediate = Transform * vec4(squareVertices, 1);
+	world_pos = intermediate.xyz;
+	gl_Position = VP * intermediate;
+	uv = squareVertices.xy;
 }

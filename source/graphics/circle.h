@@ -1,5 +1,5 @@
 #pragma once
-#include "shape.h"
+#include "graphic_manager.h"
 
 class Circle :
 	public Shape
@@ -10,17 +10,18 @@ public:
 
 	float radius;
 
-	void draw(const Camera*, glm::mat4 base) override;
+	void draw(const Camera* camera, glm::mat4 transform) override;
 	signed char draw_order() override;
 
-	glm::vec3 world_position;
-
 private:
-	GLuint viewmatrix_ID;
-	GLuint projectionmatrix_ID;
-	GLuint backgroundcolor_ID;
+	GLuint vp_ID;
 	GLuint edge_ID;
 	GLuint thickness_ID;
 	GLuint screenwith_ID;
+	GLuint radius_ID;
+	GLuint camera_pos_ID;
+	GLuint camera_dir_ID;
+
+	glm::mat4 get_adjusted_transform(LongVector camera_position, glm::mat4 transform);
 };
 

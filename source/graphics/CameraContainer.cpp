@@ -1,18 +1,13 @@
 #include "CameraContainer.h"
 
-CameraContainer::CameraContainer(GLFWwindow* _window_ptx, double* _scroll_ptx) : Agent() {
-	scroll_ptx = _scroll_ptx;
-	window_ptx = _window_ptx;
+CameraContainer::CameraContainer() : Agent() {
 
-	int width, height;
-	glfwGetWindowSize(window_ptx, &width, &height);
+	small_scale = new Camera();
+	large_scale = new Camera();
+	graphics_manager->all_cameras.push_back(small_scale);
+	graphics_manager->all_cameras.push_back(large_scale);
 
-	small_scale = Camera(width, height);
-	large_scale = Camera(width, height);
-	graphics_server->all_cameras.push_back(&small_scale);
-	graphics_server->all_cameras.push_back(&large_scale);
-
-	small_scale.render_layers = 2;
+	small_scale->render_layers = 2;
 
 	horizontal_angle = 0;
 	vertical_angle = 0;
@@ -23,11 +18,16 @@ CameraContainer::CameraContainer(GLFWwindow* _window_ptx, double* _scroll_ptx) :
 	max_vertical_angle = settings->max_vertical_angle;
 	scroll_sensitivity = settings->scroll_sensitivity;
 
-	small_scale.fov = large_scale.fov = initial_fov;
-	small_scale.recalculate_vp();
-	large_scale.recalculate_vp();
+	small_scale->fov = large_scale->fov = initial_fov;
+	small_scale->recalculate_vp();
+	large_scale->recalculate_vp();
 
-	small_scale.distance = 1/position_scale;
+	close_far_ratio = 50 / position_scale;	// 1 unit  =^ 50 m
+
+	large_scale->distance = 1;
+	small_scale->distance = large_scale->distance * close_far_ratio;
+
+	ui_manager->radio->connect("window_resized", radio, RadioSignal("on_window_resized"));
 }
 
 CameraContainer::~CameraContainer() {
@@ -39,43 +39,48 @@ void CameraContainer::logic_step(double dt) {
 		interpolation_step(dt);
 	}
 
-	int width, height;
-	glfwGetWindowSize(window_ptx, &width, &height);
-	small_scale.screensize = large_scale.screensize = Screenpos(width, height);
+	focus_transform = current_focus->fetch_focus_transformation(false);
 
-	if (glfwGetMouseButton(window_ptx, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+	int width, height;
+	glfwGetWindowSize(ui_manager->get_window_ptx(), &width, &height);
+	small_scale->screensize = large_scale->screensize = Screenpos(width, height);
+
+	if (glfwGetMouseButton(ui_manager->get_window_ptx(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 		if (!is_rotating) {
 		//	glfwSetCursorPos(camera->window_ptx, camera->screensize.x / 2, camera->screensize.y / 2);
-			glfwGetCursorPos(window_ptx, &prev_mouse_x, &prev_mouse_y);
+			glfwGetCursorPos(ui_manager->get_window_ptx(), &prev_mouse_x, &prev_mouse_y);
 		}
 
 		is_rotating = true;
 	}
-	else if (glfwGetMouseButton(window_ptx, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
+	else if (glfwGetMouseButton(ui_manager->get_window_ptx(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
 		is_rotating = false;
 	}
 
 	if (is_rotating) {
-		update_rotation(dt, window_ptx);
+		update_rotation(dt, ui_manager->get_window_ptx());
 	}
+	recalculate_orientation();
 
-	large_scale.distance = exp(scroll_sensitivity * -*scroll_ptx);
-	large_scale.near_clip = std::max(1e-6, large_scale.distance / 100);
-	large_scale.far_clip = std::max(1.0, large_scale.distance * 1000);
+	double scroll_value = -*ui_manager->get_scroll_ptx();
+	//std::cout << scroll_value;
 
-	small_scale.distance = exp(scroll_sensitivity * -*scroll_ptx) / position_scale;
-	small_scale.near_clip = small_scale.distance / 100;
-	small_scale.far_clip = small_scale.distance * 1000;
+	large_scale->distance = exp(scroll_sensitivity * scroll_value);
+	large_scale->near_clip = std::max(1e-6, large_scale->distance / 100);
+	large_scale->far_clip = std::max(1.0, large_scale->distance * 1000);
 
-	glm::vec3 move_dir = glm::normalize(glm::vec3(large_scale.direction.x, 0, large_scale.direction.z));
-	glm::vec3 move_right = glm::normalize(glm::cross(move_dir, large_scale.up));
+	small_scale->distance = large_scale->distance * close_far_ratio;
+	small_scale->near_clip = small_scale->distance / 100;
+	small_scale->far_clip = small_scale->distance * 1000;
 
-	small_scale.recalculate_vp();
-	large_scale.recalculate_vp();
+	LongVector move_dir = LongVector(large_scale->direction.x, 0, large_scale->direction.z).normalized();
+	LongVector move_right = longvec_cross(move_dir, large_scale->up).normalized();
+
+	small_scale->recalculate_vp();
+	large_scale->recalculate_vp();
 }
 
 void CameraContainer::update_rotation(double dt, GLFWwindow* window_ptx) {
-
 	double mouse_x, mouse_y;
 	glfwGetCursorPos(window_ptx, &mouse_x, &mouse_y);
 	//glfwSetCursorPos(window_ptx, camera->screensize.x / 2, camera->screensize.y / 2);
@@ -90,35 +95,38 @@ void CameraContainer::update_rotation(double dt, GLFWwindow* window_ptx) {
 		vertical_angle = min_vertical_angle;
 	}
 
-	recalculate_orientation();
-
 	prev_mouse_x = mouse_x;
 	prev_mouse_y = mouse_y;
 }
 
 void CameraContainer::recalculate_orientation() {
-	small_scale.direction = large_scale.direction = glm::vec3(focus_transform * glm::vec4(
+	small_scale->direction = large_scale->direction = focus_transform.mul(LongVector(
 		cos(vertical_angle) * sin(horizontal_angle),
 		sin(vertical_angle),
-		cos(vertical_angle) * cos(horizontal_angle),
-		1.0
-	));
+		cos(vertical_angle) * cos(horizontal_angle)
+	), 1.0);
 
-	glm::vec3 right = glm::vec3(focus_transform * glm::vec4(
+	LongVector right = focus_transform.mul(LongVector(
 		sin(horizontal_angle - pi_halfs),
 		0.0,
-		cos(horizontal_angle - pi_halfs),
-		1.0
-	));
+		cos(horizontal_angle - pi_halfs)
+	), 1.0);
 
-	small_scale.up = large_scale.up = glm::cross(right, large_scale.direction);
+	small_scale->up = large_scale->up = longvec_cross(right, large_scale->direction);
 }
 
 void CameraContainer::interpolation_step(double dt) {
 	interpolation_value += dt;
 	if (interpolation_value >= 1.0) {
 		focus_offset = LongVector(0.0, 0.0, 0.0);
-		focus_transform = current_focus->get_focus_transformation();
+		if (interpolation_value - dt < 0.5) {
+			Agent* t = current_focus;
+			focus(interpolation_focus);
+			interpolation_focus = t;
+			interpolation_switch = true;  // If dt is huge
+		}
+		focus_transform = current_focus->fetch_focus_transformation(false);
+		
 		is_interpolating = false;
 		recalculate_orientation();
 		return;
@@ -126,11 +134,11 @@ void CameraContainer::interpolation_step(double dt) {
 	if (interpolation_value < .5) {
 		focus_offset = (interpolation_focus->position - current_focus->position) * interpolation_value * interpolation_value * 2;
 		focus_transform = interpolate_matrix(
-			current_focus->get_focus_transformation(),
-			interpolation_focus->get_focus_transformation(), interpolation_value);
+			current_focus->fetch_focus_transformation(false),
+			current_focus->fetch_focus_transformation(false), interpolation_value);
 	} else {
 		if (!interpolation_switch) {
-			auto t = current_focus;
+			Agent* t = current_focus;
 			focus(interpolation_focus);
 			interpolation_focus = t;
 			interpolation_switch = true;
@@ -142,6 +150,13 @@ void CameraContainer::interpolation_step(double dt) {
 	}
 	recalculate_orientation();
 	//camera->distance = 1 * sqrt(1 - interpolation_value * interpolation_value);
+}
+
+void CameraContainer::interprete_signal(RadioSignal signal) {
+	if (signal.identifier == "on_window_resized") {
+		small_scale->on_window_resized();
+		large_scale->on_window_resized();
+	}
 }
 
 void CameraContainer::focus(Agent* o) {
@@ -175,6 +190,13 @@ LongVector CameraContainer::get_focal_point() {
 	if (current_focus == nullptr) {
 		return focus_offset;
 	}
-	//print_vector(current_focus->position + focus_offset);
 	return current_focus->position + focus_offset;
+}
+
+AgentType const CameraContainer::get_type() {
+	return AgentType::CAMERA;
+}
+
+bool const CameraContainer::is_instance_of(AgentType other) {
+	return Agent::is_instance_of(other) || other == get_type();
 }

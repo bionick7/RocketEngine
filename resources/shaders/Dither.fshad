@@ -1,0 +1,20 @@
+#version 330 core
+
+layout(location = 0) out vec3 color;
+in vec4 gl_FragCoord;
+in float path_offset;
+
+uniform float _Active;
+uniform vec2 _CameraBounding;  // 0 = nearclip; 1 = farclip
+
+void main(){
+	float z = gl_FragCoord.z / (gl_FragCoord.w * _CameraBounding.y / 1000.0);
+	float ammount =  smoothstep(2.5, 10, z);
+	float wave = sin(path_offset * 2000) * .5 + .5;
+	float a = step(ammount, wave);
+	color = vec3(mix(1-a, a, _Active), 0, 0);
+	
+	float n = _CameraBounding.x;
+	float f = _CameraBounding.y;
+	float linear_z = 2*f*n/(f-n) / (z - (f+n)/(f-n));
+}

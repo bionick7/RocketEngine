@@ -1,21 +1,27 @@
 #pragma once
 #include "agent.h"
-#include "shape.h"
+#include "graphic_manager.h"
 #include "Camera.h"
 #include "glm/glm.hpp"
 #include "asset_manager.h"
+#include "ui_manager.h"
 #include "settings.h"
 
-class CameraContainer : Agent
+#define CAMERALAYER_FAR 0x01
+#define CAMERALAYER_CLOSE 0x02
+
+class CameraContainer : 
+	public Agent
 {
 public:
-	CameraContainer(GLFWwindow*, double*);
+	CameraContainer();
 	~CameraContainer();
 
-	Camera small_scale;
-	Camera large_scale;
+	Camera* small_scale;
+	Camera* large_scale;
 
 	void logic_step(double) override;
+	void interprete_signal(RadioSignal) override;
 
 	void update_rotation(double, GLFWwindow*);
 	void interpolation_step(double);
@@ -27,10 +33,13 @@ public:
 	void recalculate_orientation();
 
 	Agent* current_focus = nullptr;
-	glm::mat4 focus_transform;
+	LongMatrix4x4 focus_transform;
 	LongVector focus_offset = LongVector(0.0, 0.0, 0.0);
 
 	LongVector get_focal_point();
+
+	AgentType const get_type() override;
+	bool const is_instance_of(AgentType) override;
 
 private:
 	double mouse_speed = 0.5;
@@ -48,6 +57,5 @@ private:
 	double interpolation_value;
 	bool is_interpolating, interpolation_switch;
 
-	GLFWwindow* window_ptx;
-	double* scroll_ptx;
+	double close_far_ratio = 1;
 };

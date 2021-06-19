@@ -5,6 +5,8 @@
 	
 	int Screen_width = 1600
 	int Screen_height = 900
+
+	bit Skip_postprocessing = 0
 <
 
 >Audio

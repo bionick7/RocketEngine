@@ -1,0 +1,68 @@
+>ENUM
+	chr name = AGENT_TYPE
+	chr*6-values = 
+		NONE
+		CAMERA
+		ORBITER
+		CELESTIAL
+		RINGSYSTEM
+		DEFAULT_SCRIPTABLE
+	// Synced with C++, don't touch
+<
+
+>general
+	chr default_include_text = ""
+		foreign static get_global(name)
+		foreign static set_global(name, x)
+		foreign static get_data_root()
+		foreign static get_game_root()
+		//foreign static spawn(type, object)
+	""
+<
+
+>modules
+	>console
+		chr path = \P console.wren
+		int loading_order = 20
+	<
+
+	>data\_structure
+		chr path = \P foreign\data_structure.wren
+		int loading_order = 0
+	<
+
+	>surface\_point
+		chr path = \P expansions\surface_point.wren
+		int loading_order = 10
+	<
+	
+	>agent\_interface
+		chr path = \P foreign\agent_interface.wren
+		int loading_order = 0
+	<
+
+	>mockup
+		bit internal = true
+		chr source = ""
+		class Mockup {
+			mockup() {
+				return null
+			}
+			
+			// intentional compiletime error
+		}
+		""
+		
+		int loading_order = 0
+	<
+	>linear\_algebra
+		chr path = \P foreign\linear_algebra.wren
+		int loading_order = 0
+	<
+<
+
+>custom_classes
+	>SurfacePoint
+		int type = AGENT_TYPE/DEFAULT_SCRIPTABLE
+	<
+<

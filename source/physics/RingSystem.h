@@ -1,7 +1,7 @@
 #pragma once
 #include "Orbiter.h"
 #include "lineset.h"
-#include "Blackboard.h"
+#include "scene_manager.h"
 
 //typedef unsigned short pixel_indx;
 
@@ -10,14 +10,18 @@
 class RingSystem : public Orbiter
 {
 public:
-	static const Type type = Type::RINGSYSTEM;
+	static const AgentType type = AgentType::RINGSYSTEM;
 
-	RingSystem(io::DataStructure*, Orbiter*);
+	RingSystem(io::DataStructurePtr, Orbiter*);
 
 	void orbiter_step(double, agent_id) override;
 	void draw_step(double) override;
 
-	Type get_type() override;
+	AgentType const get_type() override;
+	bool const is_instance_of(AgentType) override;
+
+protected:
+	void on_orbit_changed();
 
 private:
 	// original orbital values
@@ -26,6 +30,7 @@ private:
 	unsigned hatching_segments = 150;
 
 	double width;
+	Polygone* inner;
 	Polygone* outer;
 	LineSet* hatching;
 

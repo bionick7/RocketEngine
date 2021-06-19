@@ -1,24 +1,36 @@
 #include "setups.h"
-#include "console_logic.h"
+#include "graph.h"
 
-UICanvas* setup_canvas(GLFWwindow* window) {
-	UICanvas* canvas = new UICanvas(window);
-	Console* console = new Console((Font*)assets->get_default(io::ResourceType::FONT), window);
+void setup_canvas() {
+	Console* console = new Console(assets->get_default<Font>(io::ResourceType::FONT), ui_manager->get_window_ptx());
 	Graph* graph = new Graph();
+
 
 	std::vector<float> data = std::vector<float>();
 	for (float i = 0; i < 100.0f; i++) {
 		data.push_back(sin(i / 20.0f));
 	}
 
-	graph->set_data(data, -5, 5);
-	graph->set_transform(200, 200, 300, 320);
-	console->set_transform(100, -100, 300, 300);
-	canvas->add(console);
-	canvas->add(graph);
-	canvas->current_focus_input = console->input;
+	UICanvas* canvas = ui_manager->get_canvas();
 
-	return canvas;
+	// TODO Anchor system
+	console->set_transform_anchor_margin(0, 300, 0, 0, 0, 0, 1, 0);
+	console->movable = false;
+	canvas->add(console);
+
+	graph->set_data(data);
+	graph->set_transform(0, 300, 600, 300);
+	//canvas->add(graph);
+	//canvas->current_focus_input = console->input;
+
+	// TODO Anchor system
+	Textmesh* text = new Textmesh(
+		"the quick brown fox jumps over a lazy dog \n THE QUICK BROWN FOX JUMPS OVER A LAZY DOG \n 0123456789 +-*/=\n@!\"§$%&/()=?\\",
+		assets->get_default<Font>(io::ResourceType::FONT)
+	);
+	text->set_transform_anchor_margin(300, 600, 0, -300, 0, 0, 1, 1);
+	text->movable = true;
+	canvas->add(text);
 }
 
 void setup_opengl() {
@@ -27,39 +39,35 @@ void setup_opengl() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL 
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+
+	//glDepthMask(GL_TRUE);
+	//glDepthFunc(GL_LESS);
 }
 
-GLFWwindow* setup_window() {
-	GLFWwindow* window_ptx;
-	window_ptx = glfwCreateWindow(settings->width, settings->height, "RocketEngine", NULL, NULL);
-	if (window_ptx == NULL) {
-		std::cerr << "Failed to open GLFW window" << std::endl;
+GLFWwindow* setup_window(int width, int height) {
+	GLFWwindow* window_ptx = glfwCreateWindow(width, height, "RocketEngine", nullptr, nullptr);
+	if (window_ptx == nullptr) {
+		errlog("Failed to open GLFW window");
 		glfwTerminate();
-		throw - 1;
 	}
 
 	glfwMakeContextCurrent(window_ptx);
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK) {
-		std::cerr << "Failed to initialize GLEW" << std::endl;
-		throw - 1;
+		errlog("Failed to initialize GLEW");
 	}
 
 	return window_ptx;
 }
 
-io::DataStructure* setup_data(int arg_count, char** args) {
+io::DataStructurePtr setup_data(int arg_count, char** args) {
 	if (!io::initialize(arg_count, args)) {
-		std::cerr << "Couldn't initialize CFG reader" << std::endl;
+		errlog("Couldn't initialize CFG reader");
 	}
+	return io::read_file(init_path, io::base_dir, "Main", nullptr, false);
+}
 
-	io::DataStructure* main_structure = io::read_file(init_path, io::base_dir, "Main", NULL, false);
-	settings = new Settings(main_structure->get_child("settings"));
-	global_blackboard = new Blackboard();
-	graphics_server = new GraphicsServer();
-
+void interprete_cmds(int arg_count, char** args) {
 	std::cout << "CM Arguments" << std::endl;
 	for (int i = 0; i < arg_count; i++) {
 		if (std::string(args[i]) == std::string("-startcommands")) {
@@ -67,17 +75,20 @@ io::DataStructure* setup_data(int arg_count, char** args) {
 			bool success;
 			std::vector<std::string> lines = io::read_lines_from_file(filepath, io::base_dir, &success, false);
 			if (success) {
+				// Run boot commands
 				for (std::string line : lines) {
-					console_interpreteation(line);
+					if (line[0] != '/' || line[1] != '/') {
+						if (scripting_manager != nullptr) {
+							scripting_manager->console_interpreteation(line);
+						}
+					}
 				}
 			}
 			else {
-				std::cerr << "Couldn't open " << filepath << std::endl;
+				errlog("Couldn't open " + filepath);
 			}
 			std::cout << "\t- " << "command entry point: " << filepath << std::endl;
 		}
 	}
 	std::cout << " ---- " << std::endl;
-
-	return main_structure;
 }

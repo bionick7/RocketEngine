@@ -1,0 +1,33 @@
+#version 330 core
+
+in vec2 uv;
+
+uniform sampler2D _ScreenTexture;
+//uniform sampler2D _DephtTexture;
+uniform float _Time;
+
+uniform vec3 _BackgroundColor;
+uniform vec3 _ForegroundColor;
+
+out vec4 color;
+
+float rng11(float s) {
+	return fract(s * 21.22351465 + 5.4456);
+}
+
+void main(){
+	vec2 screen_uv = uv;
+
+	float t = _Time;
+
+	float scan = (sin(uv.y * 100 - t * 10) + 1) * 0.006;
+	float main_glitch = clamp(0.5 - abs(sin(uv.y * 10 + t * 2)), 0, 0.1);
+	//float sec_scanline = max(0, 0.04 - abs(sin(uv.y * 15 + t * 14.21)));
+	float glitch = main_glitch / 30.0 * step(rng11(t), 0.1) * step(rng11(t * .123), 0.1);
+	screen_uv.x += glitch;
+	float a = texture(_ScreenTexture, screen_uv).r;
+	a += scan;
+	//float d = texture(_DephtTexture, screen_uv).r;
+	//color = vec4(d, a, 0, 1);
+	color = vec4(a * _ForegroundColor + (1 - a) * _BackgroundColor, 1);
+}

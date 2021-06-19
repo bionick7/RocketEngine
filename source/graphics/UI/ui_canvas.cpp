@@ -12,14 +12,15 @@ void UICanvas::set_active_element(UIElement* new_active) {
 		return;
 	}
 	active->set_outline(true);
-	if (TextInput* active_textinput = dynamic_cast<TextInput*>(active)) {
-		current_focus_input = active_textinput;
-	} else if (Console* active_console = dynamic_cast<Console*>(active)) {
-		current_focus_input = active_console->input;
-	} else {
-		// Stick with the last
-		//current_focus_input = NULL;
-	}
+	current_focus_input = active;
+	//if (TextInput* active_textinput = dynamic_cast<TextInput*>(active)) {
+	//	current_focus_input = active_textinput;
+	//} else if (Console* active_console = dynamic_cast<Console*>(active)) {
+	//	current_focus_input = active_console->input;
+	//} else {
+	//	// Stick with the last
+	//	//current_focus_input = NULL;
+	//}
 }
 
 UIElement* UICanvas::get_active_element() {
@@ -49,47 +50,53 @@ void UICanvas::add(UIElement *element) {
 	elements.push_back(element);
 }
 
-void UICanvas::draw(double delta_t) {
+void UICanvas::draw() {
+	glDisable(GL_DEPTH_TEST);
 	if (dragging) {
 		Screenpos mouse_position = get_mouse_position();
-		active->set_transform(mouse_position.x - offset.x, mouse_position.y - offset.y, active->width, active->height);
+		if (active->movable) {
+			active->set_transform(mouse_position.x - offset.x, mouse_position.y - offset.y, active->width, active->height);
+		}
 	}
 	for (UIElement* element : elements) {
-		element->update(delta_t, window);
+		element->step();
 	}
 }
 
 void UICanvas::character_callback(GLFWwindow* window, unsigned int codepoint) {
 	if (current_focus_input == NULL)
 		return;
-	current_focus_input->insert(codepoint);
+
+	current_focus_input->character_callback(window, codepoint);
 }
 
 void UICanvas::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (current_focus_input == NULL)
 		return;
-	if (action == GLFW_PRESS) {
-		std::string cont = current_focus_input->get_content();
-		unsigned pos = current_focus_input->pointer;
-		if (key == GLFW_KEY_BACKSPACE) {
-			cont = cont.substr(0, pos - 1) + cont.substr(pos);
-			current_focus_input->dec_poiter();
-			current_focus_input->set_content(cont);
-		}
-		else if (key == GLFW_KEY_DELETE) {
-			cont = cont.substr(0, pos) + cont.substr(pos + 1); // Not checked
-			current_focus_input->set_content(cont);
-		}
-		else if (key == GLFW_KEY_ENTER) {
-			current_focus_input->insert('\n');
-		}
-		else if (key == GLFW_KEY_RIGHT) {
-			current_focus_input->inc_poiter();
-		}
-		else if (key == GLFW_KEY_LEFT) {
-			current_focus_input->dec_poiter();
-		}
-	}
+	current_focus_input->key_callback(window, key, scancode, action, mods);
+
+	//if (action == GLFW_PRESS) {
+	//	std::string cont = current_focus_input->get_content();
+	//	unsigned pos = current_focus_input->pointer;
+	//	if (key == GLFW_KEY_BACKSPACE) {
+	//		cont = cont.substr(0, pos - 1) + cont.substr(pos);
+	//		current_focus_input->dec_poiter();
+	//		current_focus_input->set_content(cont);
+	//	}
+	//	else if (key == GLFW_KEY_DELETE) {
+	//		cont = cont.substr(0, pos) + cont.substr(pos + 1); // Not checked
+	//		current_focus_input->set_content(cont);
+	//	}
+	//	else if (key == GLFW_KEY_ENTER) {
+	//		current_focus_input->insert('\n');
+	//	}
+	//	else if (key == GLFW_KEY_RIGHT) {
+	//		current_focus_input->inc_poiter();
+	//	}
+	//	else if (key == GLFW_KEY_LEFT) {
+	//		current_focus_input->dec_poiter();
+	//	}
+	//}
 }
 
 void UICanvas::mouse_callback(GLFWwindow* window, int button, int action, int modifier) {

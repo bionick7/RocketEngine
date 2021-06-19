@@ -1,29 +1,26 @@
 #include "Camera.h"
 
 Camera::Camera() {
-	screensize = Screenpos(0, 0);
-	aspect_ratio = 1.0;
+	screensize = Screenpos(settings->width, settings->height);
+	aspect_ratio = settings->width / (float)settings->height;
 	
-	focus_point = glm::vec3(0, 0, 0);
-	direction = glm::vec3(0, 0, -1);
-	up = glm::vec3(0, 1, 0);
+	focus_point = LongVector(0.0, 0.0, 0.0);  // Should always be 0; everything else moves
+	direction = LongVector(0.0, 0.0, -1.0);
+	up = LongVector(0.0, 1.0, 0.0);
 	distance = 1;
+	world_position = focus_point - direction * distance;
 }
 
-Camera::Camera(int width, int height) {
-	screensize = Screenpos(width, height);
-	aspect_ratio = width / (float)height;
-	
-	focus_point = glm::vec3(0, 0, 0);
-	direction = glm::vec3(0, 0, -1);
-	up = glm::vec3(0, 1, 0);
-	distance = 1;
+void Camera::on_window_resized() {
+	screensize = Screenpos(settings->width, settings->height);
+	aspect_ratio = settings->width / (float)settings->height;
+
+	recalculate_vp();
 }
 
 void Camera::recalculate_vp() {
-	glm::vec3 d_pos = direction;
-	d_pos *= distance;
+	world_position = focus_point - direction * distance;
 	projection_matrix = glm::perspective(float(fov), aspect_ratio, float(near_clip), float(far_clip));
-	view_matrix = glm::lookAt(focus_point - d_pos, focus_point, up);
+	view_matrix = glm::lookAt(world_position.to_float_vec(), focus_point.to_float_vec(), up.to_float_vec());
 	vp_matrix = projection_matrix * view_matrix;
 }

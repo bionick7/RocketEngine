@@ -1,9 +1,9 @@
 #version 330 core
 
-out vec3 color;
+layout(location = 0) out vec3 color;
 
-uniform vec3 Color;
+uniform float _Active;
 
 void main(){
-	color = Color;
+	color =  vec3(_Active, 0, 0);
 }

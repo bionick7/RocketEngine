@@ -1,0 +1,26 @@
+#version 330 core
+
+layout(location = 0) in float Anomaly;
+
+uniform mat4 _VPM;
+
+uniform float _EccAnomaly;
+uniform mat4 _OrbitTransform;
+uniform float _EllA;
+uniform float _EllB;
+
+out float path_offset;
+
+vec4 get_point(float x){
+	return _OrbitTransform * vec4(
+		sin(_EccAnomaly - x) * _EllA,
+		0,
+		cos(_EccAnomaly - x) * _EllB,
+		1
+	);
+}
+
+void main() {
+	gl_Position = _VPM * get_point(Anomaly);
+	path_offset = Anomaly / 6.283;
+}

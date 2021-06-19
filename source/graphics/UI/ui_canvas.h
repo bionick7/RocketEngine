@@ -1,22 +1,22 @@
 #pragma once
 #include "asset_manager.h"
 #include "settings.h"
-#include "console.h"
-#include "graph.h"
+#include "ui_element.h"
+
+#define WINDOW_RESIZED 1
 
 class UICanvas
 {
 public:
 	UICanvas(GLFWwindow*);
-	void draw(double);
+	void draw();
 	void add(UIElement*);
 
 	void character_callback(GLFWwindow*, unsigned int);
 	void key_callback(GLFWwindow*, int, int, int, int);
 	void mouse_callback(GLFWwindow*, int, int, int);
 
-	TextInput* current_focus_input;
-
+	UIElement* current_focus_input;
 
 	void set_active_element(UIElement*);
 	UIElement* get_active_element();

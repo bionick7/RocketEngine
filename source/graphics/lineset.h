@@ -1,5 +1,5 @@
 #pragma once
-#include "shape.h"
+#include "graphic_manager.h"
 
 struct Line3D {
 	glm::vec3 start, end;
@@ -22,4 +22,5 @@ public:
 
 private:
 	GLuint array_id;
+	GLuint active_ID;
 };

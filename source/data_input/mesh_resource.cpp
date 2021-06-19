@@ -2,13 +2,17 @@
 
 MeshResource::MeshResource() : Resource::Resource() {}
 
-MeshResource::MeshResource(io::DataStructure* data) {
+MeshResource::MeshResource(io::DataStructurePtr data) {
 	name = data->get_name();
 	file_path = data->get_string("path");
 	extra_size = data->get_double("size", 1.0, true);
 	read_from_file(file_path);
 
 	// wire stuff
+}
+
+MeshResource::~MeshResource() {
+	kill(); // Needs to be written for each individual resource
 }
 
 bool MeshResource::deserialize(std::istream* in, int buffer_length) {
@@ -67,7 +71,7 @@ bool MeshResource::deserialize(std::istream* in, int buffer_length) {
 				b = io::parse_int32(content.substr(semi1 + 1));
 			}
 			catch (std::invalid_argument) {
-				std::cerr << "\"" << content << "\" does not contain 2 valid integers line: " << line_count << "; " << file_path << std::endl;
+				errlog("\"" + content + "\" does not contain 2 valid integers line: " + std::to_string(line_count) + "; " + file_path);
 			}
 			indecies[index_idx++] = a - 1;
 			indecies[index_idx++] = b - 1;
@@ -93,10 +97,15 @@ bool MeshResource::serialize(std::ostream* in, int* buffer_length) {
 }
 
 void MeshResource::kill() {
-	if (vertecies != nullptr)
+	Resource::kill();
+	if (vertecies != nullptr) {
 		delete[] vertecies;
-	if (indecies != nullptr)
+		vertecies = nullptr;
+	}
+	if (indecies != nullptr) {
 		delete[] indecies;
+		indecies = nullptr;
+	}
 }
 
 io::ResourceType MeshResource::get_type() {
@@ -144,7 +153,7 @@ glm::vec3 MeshResource::get_vertex(uint16_t index) {
 		return vertecies[index];
 	}
 	else {
-		print_text("Index out of bounds: Tried to index vertex " + std::to_string(index) + " even though there are only " + std::to_string(vertex_count));
+		infolog("Index out of bounds: Tried to index vertex " + std::to_string(index) + " even though there are only " + std::to_string(vertex_count));
 	}
 }
 
@@ -156,7 +165,7 @@ Segment MeshResource::get_segment(uint16_t index) {
 		};
 	}
 	else {
-		print_text("Index out of bounds: Tried to index triangle " + std::to_string(index) + " even though there are only " + std::to_string(get_segment_count()));
+		errlog("Index out of bounds: Tried to index triangle " + std::to_string(index) + " even though there are only " + std::to_string(get_segment_count()));
 	}
 }
 
@@ -169,7 +178,7 @@ Triangle MeshResource::get_triangle(uint16_t index) {
 		};
 	}
 	else {
-		print_text("Index out of bounds: Tried to index triangle " + std::to_string(index) + " even though there are only " + std::to_string(get_triangle_count()));
+		errlog("Index out of bounds: Tried to index triangle " + std::to_string(index) + " even though there are only " + std::to_string(get_triangle_count()));
 	}
 }
 
@@ -178,7 +187,7 @@ void MeshResource::set_vertex(uint16_t index, glm::vec3 value) {
 		vertecies[index] = value;
 	}
 	else {
-		print_text("Index out of bounds: Tried to index vertex " + std::to_string(index) + " even though there are only " + std::to_string(vertex_count));
+		errlog("Index out of bounds: Tried to index vertex " + std::to_string(index) + " even though there are only " + std::to_string(vertex_count));
 	}
 }
 
@@ -188,7 +197,7 @@ void MeshResource::set_segment(uint16_t index, uint16_t a, uint16_t b) {
 		indecies[index * 3 + 1] = b;
 	}
 	else {
-		print_text("Index out of bounds: Tried to index triangle " + std::to_string(index) + " even though there are only " + std::to_string(get_segment_count()));
+		errlog("Index out of bounds: Tried to index triangle " + std::to_string(index) + " even though there are only " + std::to_string(get_segment_count()));
 	}
 }
 
@@ -200,6 +209,6 @@ void MeshResource::set_triangle(uint16_t index, uint16_t a, uint16_t b, uint16_t
 		indecies[index * 3 + 2] = c;
 	}
 	else {
-		print_text("Index out of bounds: Tried to index triangle " + std::to_string(index) + " even though there are only " + std::to_string(get_triangle_count()));
+		errlog("Index out of bounds: Tried to index triangle " + std::to_string(index) + " even though there are only " + std::to_string(get_triangle_count()));
 	}
 }

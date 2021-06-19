@@ -5,20 +5,20 @@
 class Camera {
 public:
 	Camera();
-	Camera(int, int);
 
 	Screenpos screensize;
 
 	double fov;
 	double distance;
 
-	glm::vec3 focus_point, direction, up;
+	LongVector focus_point, direction, up, world_position;
 	glm::mat4 vp_matrix;
 	glm::mat4 projection_matrix;
 	glm::mat4 view_matrix;
 
 	float aspect_ratio;
 
+	void on_window_resized();
 	void recalculate_vp();
 
 	double near_clip = .1;

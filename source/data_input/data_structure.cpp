@@ -14,77 +14,55 @@ namespace io {
 		return ss.str();
 	}
 
-	DataStructure::DataStructure(std::string _name, DataStructure* _parent, std::string _path)
+	DataStructure::DataStructure(std::string _name, DataStructurePtr _parent, std::string _path)
 	{
 		set_name(_name);
-		parent = _parent;
+		w_parent = _parent;
 		file_path = _path;
 		directory_path = get_directory();
 
 		map_int32 = std::map<std::string, int>();
 		map_float64 = std::map<std::string, double>();
 		map_string = std::map<std::string, std::string>();
-		children = std::map<std::string, DataStructure*>();
+		children = std::map<std::string, DataStructurePtr>();
 
 		map_int32_arr = std::map<std::string, std::vector<int>>();
 		map_float64_arr = std::map<std::string, std::vector<double>>();
 		map_string_arr = std::map<std::string, std::vector<std::string>>();
-		children_arr = std::map<std::string, std::vector<DataStructure*>>();
+		children_arr = std::map<std::string, std::vector<DataStructurePtr>>();
 
-		if (parent != NULL) {
-			parent->children.insert({ get_name(), this });
-			for (DSEnum e : parent->active_enums)
+		if (_parent != nullptr) {
+			//parent->children.insert({ get_name(), this });
+			for (DSEnum e : _parent->active_enums)
 				active_enums.push_back(e);
 		}
 	}
 
 	DataStructure::~DataStructure()
-	{
-		for (std::pair<std::string, DataStructure*> pair : children) {
+	{/*
+		for (std::pair<std::string, DataStructurePtr> pair : children) {
 			delete pair.second;
+			pair.second = nullptr;
 		}
-		for (std::pair<std::string, std::vector<DataStructure*>> pair : children_arr) {
-			for (DataStructure* item : pair.second) {
-				delete item;
+		for (std::pair<std::string, std::vector<DataStructurePtr>> pair : children_arr) {
+			for (int i = 0; i < pair.second.size(); i++) {
+				if (pair.second[i] != nullptr) {
+					delete pair.second[i];
+					pair.second[i] = nullptr;
+				}
 			}
-		}
+		}*/
 	}
 
 	unsigned DataStructure::get_recursion_depht() {
-		if (parent == NULL)
-			return 0;
-		return parent->get_recursion_depht() + 1;
+		DataStructurePtr parent = w_parent.lock();
+		if (parent && parent != nullptr) {
+			return parent->get_recursion_depht() + 1;
+		}
+		return 0;
 	}
 
-#define SETGET_ROUTINE(TYPE, SETNAME, GETNAME, MAP) \
-	void DataStructure::SETNAME(std::string field_name, TYPE value) {\
-		MAP.insert({ field_name, value });\
-	}\
-	TYPE DataStructure::GETNAME(std::string field_name, TYPE def, bool quiet) {\
-		try {\
-			return MAP.at(field_name);\
-		}\
-		catch (std::out_of_range) {\
-			if (!quiet) {\
-				std::cerr << "No such field: \"" << to_string(field_name) << "\" in " << get_name() << " (" << parent->get_name() << "); " << file_path << std::endl;\
-			}\
-			return def;\
-		}\
-	}
-
-	SETGET_ROUTINE(int, set_int, get_int, map_int32)
-	SETGET_ROUTINE(double, set_double, get_double, map_float64)
-	SETGET_ROUTINE(bool, set_bool, get_bool, map_bools)
-	SETGET_ROUTINE(std::string, set_string, get_string, map_string)
-	SETGET_ROUTINE(LongVector, set_vector, get_vector, map_vectors)
-
-	SETGET_ROUTINE(std::vector<int>, set_int_arr, get_int_arr, map_int32_arr)
-	SETGET_ROUTINE(std::vector<double>, set_double_arr, get_double_arr, map_float64_arr)
-	SETGET_ROUTINE(std::vector<bool>, set_bool_arr, get_bool_arr, map_bools_arr)
-	SETGET_ROUTINE(std::vector<std::string>, set_string_arr, get_string_arr, map_string_arr)
-	SETGET_ROUTINE(std::vector<LongVector>, set_vector_arr, get_vector_arr, map_vectors_arr)
-
-	DataStructure* DataStructure::get_child(std::string field_name, bool quiet) {
+	DataStructurePtr DataStructure::get_child(std::string field_name, bool quiet) {
 		try {
 			return children.at(field_name);
 		}
@@ -96,11 +74,11 @@ namespace io {
 		}
 	}
 
-	void DataStructure::set_child(std::string field_name, DataStructure* value) {
+	void DataStructure::set_child(std::string field_name, DataStructurePtr value) {
 		children.insert({ field_name, value });
 	}
 
-	std::vector<DataStructure*> DataStructure::get_child_arr(std::string field_name, bool quiet) {
+	std::vector<DataStructurePtr> DataStructure::get_child_arr(std::string field_name, bool quiet) {
 		try {
 			return children_arr.at(field_name);
 		}
@@ -108,10 +86,10 @@ namespace io {
 			if (!quiet) {
 				std::cerr << "No such child: " << to_string(field_name) << std::endl;
 			}
-			return std::vector<DataStructure*>();
+			return std::vector<DataStructurePtr>();
 		}
 	}
-	void DataStructure::set_child_arr(std::string field_name, std::vector<DataStructure*> value) {
+	void DataStructure::set_child_arr(std::string field_name, std::vector<DataStructurePtr> value) {
 		children_arr.insert({ field_name, value });
 	}
 
@@ -137,7 +115,7 @@ namespace io {
 		for (std::map<std::string, LongVector>::iterator it = map_vectors.begin(); it != map_vectors.end(); it++) {
 			str << pre_spaces << to_string(it->first) << " = " << to_string(it->second) << "\n";
 		}
-		for (std::map<std::string, DataStructure*>::iterator it = children.begin(); it != children.end(); it++) {
+		for (std::map<std::string, DataStructurePtr>::iterator it = children.begin(); it != children.end(); it++) {
 			str << pre_spaces << to_string(it->first) << " = " << it->second->get_content_string();
 		}
 
@@ -176,9 +154,9 @@ namespace io {
 			}
 			str << ")\n";
 		}
-		for (std::map<std::string, std::vector<DataStructure*>>::iterator it = children_arr.begin(); it != children_arr.end(); it++) {
+		for (std::map<std::string, std::vector<DataStructurePtr>>::iterator it = children_arr.begin(); it != children_arr.end(); it++) {
 			str << pre_spaces << to_string(it->first) << " = (";
-			for (DataStructure* iter : it->second) {
+			for (DataStructurePtr iter : it->second) {
 				str << to_string(iter->name);
 			}
 			str << ")\n";
@@ -196,7 +174,8 @@ namespace io {
 
 	void DataStructure::set_name(std::string value) {
 		name = value;
-		if (parent != nullptr) {
+		DataStructurePtr parent = w_parent.lock();
+		if (parent && parent != nullptr) {
 			unsigned short i = 0;
 			while (parent->children.find(value) == parent->children.end())
 			{
@@ -205,9 +184,13 @@ namespace io {
 		}
 	}
 
-	std::vector<DataStructure*> DataStructure::get_all_children() {
-		std::vector<DataStructure*> res = std::vector<DataStructure*>();
-		for (std::map<std::string, DataStructure*>::iterator it = children.begin(); it != children.end(); it++) {
+	DataStructurePtr DataStructure::get_parent() {
+		return w_parent.lock();
+	}
+
+	std::vector<DataStructurePtr> DataStructure::get_all_children() {
+		std::vector<DataStructurePtr> res = std::vector<DataStructurePtr>();
+		for (std::map<std::string, DataStructurePtr>::iterator it = children.begin(); it != children.end(); it++) {
 			res.push_back(it->second);
 		}
 		return res;
@@ -216,8 +199,48 @@ namespace io {
 	std::string DataStructure::get_directory() {
 		return file_path.substr(0, file_path.find_last_of('\\'));
 	}
+
+	std::string DataStructure::get_info()
+	{
+		DataStructurePtr parent = w_parent.lock();
+		if (parent && parent != nullptr) {
+			return get_name() + " [ROOT]; " + file_path;
+		}
+		else {
+			return get_name() + " (" + parent->get_name() + "); " + file_path;
+		}
+	}
+
+	// Not sure where toput this
+	// Unsafe
+	DataStructurePtr get_ds_from_path(std::string path, DataStructurePtr entry) {
+		if (entry == nullptr) {
+			entry = get_root_ds();
+		}
+
+		if (path == "") {
+			return entry;
+		}
+
+		int next_slash = path.find_first_of("/");
+		std::string step = path.substr(0, next_slash);
+		std::string rest = path.substr(next_slash + 1);
+		if (next_slash < 0) rest = "";
+
+		if (step == ".") {
+			return io::get_ds_from_path(rest, entry);
+		}
+		if (step == "..") {
+			return io::get_ds_from_path(rest, entry->get_parent());
+		}
+		DataStructurePtr child = entry->get_child(step);
+		if (child == nullptr) {
+			return nullptr;
+		}
+		return io::get_ds_from_path(rest, child);
+	}
 }
 
-void print_datastructure(io::DataStructure* d) {
-	std::cout << d->get_content_string();
+void print_datastructure(io::DataStructure &d) {
+	debug.out << d.get_content_string();
 }

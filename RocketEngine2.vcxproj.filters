@@ -13,151 +13,454 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\graphics">
+      <UniqueIdentifier>{bba5f76c-ea9a-47da-879f-0cc00ed17327}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core">
+      <UniqueIdentifier>{63ae821e-366e-4005-9443-5424132a2c3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\graphics\UI">
+      <UniqueIdentifier>{e05cf334-738c-430c-b882-ccae71c10e90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\behaviour">
+      <UniqueIdentifier>{0b973018-d415-4462-b652-2dd872468bdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\backend">
+      <UniqueIdentifier>{cc4f352f-4195-4dc9-95be-5973aa44c38b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Hierarchy">
+      <UniqueIdentifier>{dcd0be89-ebb3-46a9-9324-f2b8fc9d6ac0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics">
+      <UniqueIdentifier>{11eab346-6753-47c0-bd1d-6a9a11bd3e12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics\UI">
+      <UniqueIdentifier>{bbb46121-36a6-41bf-bcaa-837bd6aa424c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core">
+      <UniqueIdentifier>{c90eb2ed-ec17-4c92-bfa4-471728f0546b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\behaviour">
+      <UniqueIdentifier>{3929454d-f911-4ab1-8129-4c3091758b63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\backend">
+      <UniqueIdentifier>{5c9466bb-6c6a-4a7c-9bac-9c3fcf29994e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hierarchy">
+      <UniqueIdentifier>{b64f92e8-4ca1-4cf2-a3c3-4e71b12b8495}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Managers">
+      <UniqueIdentifier>{40c850eb-3b61-4a27-80b2-b4fe445e2b25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managers">
+      <UniqueIdentifier>{766fbdd0-0730-4154-bcb7-010442ee9515}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wren">
+      <UniqueIdentifier>{5b6304ee-48d2-454a-8429-566a2b1b87c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wren">
+      <UniqueIdentifier>{b8e47037-9e39-49c6-9d97-c7539386ca37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\data">
+      <UniqueIdentifier>{63146647-f46f-4380-806c-a3d67989fce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{d951ab02-aa3a-4659-a848-b42ff83fc58d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\wren">
+      <UniqueIdentifier>{78c19727-4ac7-44cb-a600-6ad289fb39b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\physics\Orbiter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\physics\Celestial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\circle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\polygone.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\shape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="common\shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\data_input\reader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\data_input\data_structure.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\asset_manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\debug.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\math_tools.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="common\texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\settings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\UI\ui_element.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\UI\textinput.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\UI\textmesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\UI\vectorgraphic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\UI\ui_canvas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\setups.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\core\agent.cpp">
+      <Filter>Source Files\Hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\CameraContainer.cpp">
+      <Filter>Source Files\Hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\Camera.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physics\Celestial.cpp">
+      <Filter>Source Files\Hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\circle.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
     <ClCompile Include="source\graphics\UI\console.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\data_input\data_structure.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\debug.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
     <ClCompile Include="source\graphics\UI\graph.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physics\Orbiter.cpp">
+      <Filter>Source Files\Hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="resource.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physics\RingSystem.cpp">
+      <Filter>Source Files\Hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\settings.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\lineset.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math_tools.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\mesh.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\data_input\mesh_resource.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\UI\vectorgraphic.cpp">
+      <Filter>Source Files\graphics\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\UI\ui_canvas.cpp">
+      <Filter>Source Files\graphics\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\UI\ui_element.cpp">
+      <Filter>Source Files\graphics\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\unscaling_billboard.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\UI\textmesh.cpp">
+      <Filter>Source Files\graphics\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\UI\textinput.cpp">
+      <Filter>Source Files\graphics\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="common\shader.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="common\texture.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="source\data_input\reader.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\polygone.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\behaviour\space_ship.cpp">
+      <Filter>Source Files\Hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="source\managers\graphic_manager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\managers\ui_manager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\managers\scripting_manager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="wren\src\vm\wren_compiler.c">
+      <Filter>Source Files\wren</Filter>
+    </ClCompile>
+    <ClCompile Include="wren\src\vm\wren_core.c">
+      <Filter>Source Files\wren</Filter>
+    </ClCompile>
+    <ClCompile Include="wren\src\vm\wren_debug.c">
+      <Filter>Source Files\wren</Filter>
+    </ClCompile>
+    <ClCompile Include="wren\src\vm\wren_primitive.c">
+      <Filter>Source Files\wren</Filter>
+    </ClCompile>
+    <ClCompile Include="wren\src\vm\wren_utils.c">
+      <Filter>Source Files\wren</Filter>
+    </ClCompile>
+    <ClCompile Include="wren\src\vm\wren_value.c">
+      <Filter>Source Files\wren</Filter>
+    </ClCompile>
+    <ClCompile Include="wren\src\vm\wren_vm.c">
+      <Filter>Source Files\wren</Filter>
+    </ClCompile>
+    <ClCompile Include="wren\src\optional\wren_opt_meta.c">
+      <Filter>Source Files\wren</Filter>
+    </ClCompile>
+    <ClCompile Include="wren\src\optional\wren_opt_random.c">
+      <Filter>Source Files\wren</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\ellipsis.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\managers\api_base.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\behaviour\global_functions.cpp">
+      <Filter>Source Files\behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\asset_manager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\managers\scene_manager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\radio.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\scriptable_module.cpp">
+      <Filter>Source Files\Hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\custom_library.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\managers\audio_manager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\managers\manager.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common\shader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\circle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\polygone.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\shape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\physics\Celestial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\physics\Orbiter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\data_input\data_structure.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\data_input\reader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core\core.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core\math_tools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core\debug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core\asset_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="common\texture.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core\settings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\UI\ui_canvas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\UI\ui_element.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\UI\textmesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\UI\textinput.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\UI\vectorgraphic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\setups.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\graphics\Camera.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physics\Celestial.h">
+      <Filter>Header Files\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\circle.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
     <ClInclude Include="source\graphics\UI\console.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\core.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\debug.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\UI\graph.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\lineset.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\mesh.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math_tools.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physics\Orbiter.h">
+      <Filter>Header Files\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\polygone.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\resource.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="source\data_input\reader.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="source\data_input\mesh_resource.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="source\data_input\data_structure.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physics\RingSystem.h">
+      <Filter>Header Files\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\CameraContainer.h">
+      <Filter>Header Files\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\agent.h">
+      <Filter>Header Files\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\UI\vectorgraphic.h">
+      <Filter>Header Files\graphics\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\unscaling_billboard.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="common\texture.hpp">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="source\behaviour\space_ship.h">
+      <Filter>Header Files\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\settings.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="common\shader.hpp">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\UI\ui_element.h">
+      <Filter>Header Files\graphics\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\UI\ui_canvas.h">
+      <Filter>Header Files\graphics\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\UI\textinput.h">
+      <Filter>Header Files\graphics\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\UI\textmesh.h">
+      <Filter>Header Files\graphics\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\managers\graphic_manager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\managers\ui_manager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\managers\scripting_manager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="wren\src\vm\wren_common.h">
+      <Filter>Header Files\wren</Filter>
+    </ClInclude>
+    <ClInclude Include="wren\src\vm\wren_compiler.h">
+      <Filter>Header Files\wren</Filter>
+    </ClInclude>
+    <ClInclude Include="wren\src\vm\wren_core.h">
+      <Filter>Header Files\wren</Filter>
+    </ClInclude>
+    <ClInclude Include="wren\src\vm\wren_debug.h">
+      <Filter>Header Files\wren</Filter>
+    </ClInclude>
+    <ClInclude Include="wren\src\vm\wren_opcodes.h">
+      <Filter>Header Files\wren</Filter>
+    </ClInclude>
+    <ClInclude Include="wren\src\vm\wren_primitive.h">
+      <Filter>Header Files\wren</Filter>
+    </ClInclude>
+    <ClInclude Include="wren\src\vm\wren_utils.h">
+      <Filter>Header Files\wren</Filter>
+    </ClInclude>
+    <ClInclude Include="wren\src\vm\wren_value.h">
+      <Filter>Header Files\wren</Filter>
+    </ClInclude>
+    <ClInclude Include="wren\src\vm\wren_vm.h">
+      <Filter>Header Files\wren</Filter>
+    </ClInclude>
+    <ClInclude Include="wren\src\optional\wren_opt_meta.h">
+      <Filter>Header Files\wren</Filter>
+    </ClInclude>
+    <ClInclude Include="wren\src\optional\wren_opt_random.h">
+      <Filter>Header Files\wren</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\ellipsis.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\managers\api_base.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\behaviour\global_functions.h">
+      <Filter>Header Files\behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\asset_manager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\managers\scene_manager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\radio.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\scriptable_module.h">
+      <Filter>Header Files\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\custom_library.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\managers\audio_manager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\managers\manager.h">
+      <Filter>Header Files\Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
+    <None Include="cpp.hint" />
+    <None Include="wren\src\vm\wren_core.wren.inc">
+      <Filter>Source Files\wren</Filter>
+    </None>
+    <None Include="resources\shaders\CircleFrag.fshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\CircleVert.vshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\SimpleFrag.fshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\SimpleVert.vshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\TextFragment.fshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="Debug\init.cfgt">
+      <Filter>Resource Files\data</Filter>
+    </None>
+    <None Include="resources\scripts\console.wren">
+      <Filter>Resource Files\wren</Filter>
+    </None>
+    <None Include="resources\scripts\include.cfgt">
+      <Filter>Resource Files\data</Filter>
+    </None>
+    <None Include="resources\data\assets.cfgt">
+      <Filter>Resource Files\data</Filter>
+    </None>
+    <None Include="resources\data\celestial_bodies.cfgt">
+      <Filter>Resource Files\data</Filter>
+    </None>
+    <None Include="resources\data\settings.cfgt">
+      <Filter>Resource Files\data</Filter>
+    </None>
+    <None Include="resources\data\test.cfgt">
+      <Filter>Resource Files\data</Filter>
+    </None>
+    <None Include="resources\shaders\PostFrag.fshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\Direct.vshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\UI.vshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\EllipsisVert.vshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\CircleVert_Legacy.vshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\Dither.fshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\TextVertex.vshad">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Debug\boot.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

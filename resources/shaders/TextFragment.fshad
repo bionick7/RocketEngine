@@ -5,7 +5,7 @@ in vec2 UV;
 uniform sampler2D TextureSampler;
 uniform vec4 MainColor;
 
-out vec4 color;
+out(location = 0) vec4 color;
 
 void main(){
 	color = texture( TextureSampler, UV ) * MainColor;

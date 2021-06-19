@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{9B17C455-1014-46DD-8595-55784BFD62D1}</ProjectGuid>
     <RootNamespace>RocketEngine2</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -69,9 +69,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Programing\C++\RocketEngine2\external\custom;$(IncludePath)</IncludePath>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -81,14 +79,16 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Programing\C++\RocketEngine2;D:\Programing\C++\RocketEngine2\external\custom;D:\Programing\C++\RocketEngine2\external\glm-0.9.7.1;D:\Programing\C++\RocketEngine2\external\glfw-3.1.2\include;D:\Programing\C++\RocketEngine2\external\glew-1.13.0\include;D:\Programing\C++\RocketEngine2\external\bullet-2.81-rev2613\src;D:\Programing\C++\RocketEngine2\external\assimp-3.0.1270\include;D:\Programing\C++\RocketEngine2\external\AntTweakBar-1.16\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)source\behaviour;$(ProjectDir)source\graphics\ui;$(ProjectDir)source\physics;$(ProjectDir)source\graphics;$(ProjectDir)source\managers;$(ProjectDir)source\core;$(ProjectDir)source;$(ProjectDir);$(ProjectDir)external\custom;$(ProjectDir)external\glm-0.9.7.1;$(ProjectDir)external\glfw-3.1.2\include;$(ProjectDir)external\glew-1.13.0\include;$(ProjectDir)external\bullet-2.81-rev2613\src;$(ProjectDir)external\assimp-3.0.1270\include;$(ProjectDir)external\AntTweakBar-1.16\include;$(ProjectDir)wren\src\include;$(ProjectDir)wren\src\vm;$(ProjectDir)wren\src\optional;$(ProjectDir)openal-soft-1.21.1-bin\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;GLEW_1130.lib;glfw3.lib;ANTTWEAKBAR_116_OGLCORE_GLFW.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Programing\C++\RocketEngine2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;GLEW_1130.lib;glfw3.lib;ANTTWEAKBAR_116_OGLCORE_GLFW.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib;$(ProjectDir)openal-soft-1.21.1-bin\libs\Win32</AdditionalLibraryDirectories>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <Bscmake />
+    <Bscmake />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -96,12 +96,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\custom;$(SolutionDir)external\glm-0.9.7.1;$(SolutionDir)external\glfw-3.1.2\include;$(SolutionDir)external\glew-1.13.0\include;$(SolutionDir)external\bullet-2.81-rev2613\src;$(SolutionDir)external\assimp-3.0.1270\include;$(SolutionDir)external\AntTweakBar-1.16\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)source\behaviour;$(ProjectDir)source\graphics\ui;$(ProjectDir)source\physics;$(ProjectDir)source\graphics;$(ProjectDir)source\managers;$(ProjectDir)source\core;$(ProjectDir)source;$(ProjectDir);$(ProjectDir)external\custom;$(ProjectDir)external\glm-0.9.7.1;$(ProjectDir)external\glfw-3.1.2\include;$(ProjectDir)external\glew-1.13.0\include;$(ProjectDir)external\bullet-2.81-rev2613\src;$(ProjectDir)external\assimp-3.0.1270\include;$(ProjectDir)external\AntTweakBar-1.16\include;$(ProjectDir)wren\src\include;$(ProjectDir)wren\src\vm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;GLEW_1130.lib;glfw3.lib;ANTTWEAKBAR_116_OGLCORE_GLFW.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Bscmake />
+    <Bscmake />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -111,10 +113,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)source\behaviour;$(ProjectDir)source\graphics\ui;$(ProjectDir)source\physics;$(ProjectDir)source\graphics;$(ProjectDir)source\managers;$(ProjectDir)source\core;$(ProjectDir)source;$(ProjectDir);$(ProjectDir)external\custom;$(ProjectDir)external\glm-0.9.7.1;$(ProjectDir)external\glfw-3.1.2\include;$(ProjectDir)external\glew-1.13.0\include;$(ProjectDir)external\bullet-2.81-rev2613\src;$(ProjectDir)external\assimp-3.0.1270\include;$(ProjectDir)external\AntTweakBar-1.16\include;$(ProjectDir)wren\src\include;$(ProjectDir)wren\src\vm;$(ProjectDir)wren\src\optional;$(ProjectDir)openal-soft-1.21.1-bin\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib;$(ProjectDir)openal-soft-1.21.1-bin\libs\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;GLEW_1130.lib;glfw3.lib;ANTTWEAKBAR_116_OGLCORE_GLFW.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -125,25 +131,39 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)source\behaviour;$(ProjectDir)source\graphics\ui;$(ProjectDir)source\physics;$(ProjectDir)source\graphics;$(ProjectDir)source\managers;$(ProjectDir)source\core;$(ProjectDir)source;$(ProjectDir);$(ProjectDir)external\custom;$(ProjectDir)external\glm-0.9.7.1;$(ProjectDir)external\glfw-3.1.2\include;$(ProjectDir)external\glew-1.13.0\include;$(ProjectDir)external\bullet-2.81-rev2613\src;$(ProjectDir)external\assimp-3.0.1270\include;$(ProjectDir)external\AntTweakBar-1.16\include;$(ProjectDir)wren\src\include;$(ProjectDir)wren\src\vm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;GLEW_1130.lib;glfw3.lib;ANTTWEAKBAR_116_OGLCORE_GLFW.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="common\shader.cpp" />
     <ClCompile Include="common\texture.cpp" />
+    <ClCompile Include="resource.cpp" />
+    <ClCompile Include="source\behaviour\global_functions.cpp" />
+    <ClCompile Include="source\behaviour\space_ship.cpp" />
+    <ClCompile Include="source\core\agent.cpp" />
     <ClCompile Include="source\core\asset_manager.cpp" />
+    <ClCompile Include="source\core\custom_library.cpp" />
     <ClCompile Include="source\core\debug.cpp" />
     <ClCompile Include="source\core\math_tools.cpp" />
+    <ClCompile Include="source\core\radio.cpp" />
+    <ClCompile Include="source\core\scriptable_module.cpp" />
     <ClCompile Include="source\core\settings.cpp" />
     <ClCompile Include="source\data_input\data_structure.cpp" />
+    <ClCompile Include="source\data_input\mesh_resource.cpp" />
     <ClCompile Include="source\data_input\reader.cpp" />
     <ClCompile Include="source\graphics\Camera.cpp" />
+    <ClCompile Include="source\graphics\CameraContainer.cpp" />
     <ClCompile Include="source\graphics\circle.cpp" />
+    <ClCompile Include="source\graphics\ellipsis.cpp" />
+    <ClCompile Include="source\graphics\lineset.cpp" />
+    <ClCompile Include="source\graphics\mesh.cpp" />
     <ClCompile Include="source\graphics\polygone.cpp" />
-    <ClCompile Include="source\graphics\shape.cpp" />
     <ClCompile Include="source\graphics\UI\console.cpp" />
     <ClCompile Include="source\graphics\UI\graph.cpp" />
     <ClCompile Include="source\graphics\UI\textinput.cpp" />
@@ -151,25 +171,54 @@
     <ClCompile Include="source\graphics\UI\ui_canvas.cpp" />
     <ClCompile Include="source\graphics\UI\ui_element.cpp" />
     <ClCompile Include="source\graphics\UI\vectorgraphic.cpp" />
+    <ClCompile Include="source\graphics\unscaling_billboard.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\managers\api_base.cpp" />
+    <ClCompile Include="source\managers\audio_manager.cpp" />
+    <ClCompile Include="source\managers\graphic_manager.cpp" />
+    <ClCompile Include="source\managers\manager.cpp" />
+    <ClCompile Include="source\managers\scene_manager.cpp" />
+    <ClCompile Include="source\managers\scripting_manager.cpp" />
+    <ClCompile Include="source\managers\ui_manager.cpp" />
     <ClCompile Include="source\physics\Celestial.cpp" />
     <ClCompile Include="source\physics\Orbiter.cpp" />
+    <ClCompile Include="source\physics\RingSystem.cpp" />
     <ClCompile Include="source\setups.cpp" />
+    <ClCompile Include="wren\src\optional\wren_opt_meta.c" />
+    <ClCompile Include="wren\src\optional\wren_opt_random.c" />
+    <ClCompile Include="wren\src\vm\wren_compiler.c" />
+    <ClCompile Include="wren\src\vm\wren_core.c" />
+    <ClCompile Include="wren\src\vm\wren_debug.c" />
+    <ClCompile Include="wren\src\vm\wren_primitive.c" />
+    <ClCompile Include="wren\src\vm\wren_utils.c" />
+    <ClCompile Include="wren\src\vm\wren_value.c" />
+    <ClCompile Include="wren\src\vm\wren_vm.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\shader.hpp" />
     <ClInclude Include="common\texture.hpp" />
+    <ClInclude Include="source\behaviour\global_functions.h" />
+    <ClInclude Include="source\behaviour\space_ship.h" />
+    <ClInclude Include="source\core\agent.h" />
     <ClInclude Include="source\core\asset_manager.h" />
     <ClInclude Include="source\core\core.h" />
+    <ClInclude Include="source\core\custom_library.h" />
     <ClInclude Include="source\core\debug.h" />
     <ClInclude Include="source\core\math_tools.h" />
+    <ClInclude Include="source\core\radio.h" />
+    <ClInclude Include="source\core\resource.h" />
+    <ClInclude Include="source\core\scriptable_module.h" />
     <ClInclude Include="source\core\settings.h" />
     <ClInclude Include="source\data_input\data_structure.h" />
+    <ClInclude Include="source\data_input\mesh_resource.h" />
     <ClInclude Include="source\data_input\reader.h" />
     <ClInclude Include="source\graphics\Camera.h" />
+    <ClInclude Include="source\graphics\CameraContainer.h" />
     <ClInclude Include="source\graphics\circle.h" />
+    <ClInclude Include="source\graphics\ellipsis.h" />
+    <ClInclude Include="source\graphics\lineset.h" />
+    <ClInclude Include="source\graphics\mesh.h" />
     <ClInclude Include="source\graphics\polygone.h" />
-    <ClInclude Include="source\graphics\shape.h" />
     <ClInclude Include="source\graphics\UI\console.h" />
     <ClInclude Include="source\graphics\UI\graph.h" />
     <ClInclude Include="source\graphics\UI\textinput.h" />
@@ -177,13 +226,57 @@
     <ClInclude Include="source\graphics\UI\ui_canvas.h" />
     <ClInclude Include="source\graphics\UI\ui_element.h" />
     <ClInclude Include="source\graphics\UI\vectorgraphic.h" />
+    <ClInclude Include="source\graphics\unscaling_billboard.h" />
+    <ClInclude Include="source\managers\api_base.h" />
+    <ClInclude Include="source\managers\audio_manager.h" />
+    <ClInclude Include="source\managers\graphic_manager.h" />
+    <ClInclude Include="source\managers\manager.h" />
+    <ClInclude Include="source\managers\scene_manager.h" />
+    <ClInclude Include="source\managers\scripting_manager.h" />
+    <ClInclude Include="source\managers\ui_manager.h" />
     <ClInclude Include="source\physics\Celestial.h" />
     <ClInclude Include="source\physics\Orbiter.h" />
+    <ClInclude Include="source\physics\RingSystem.h" />
     <ClInclude Include="source\setups.h" />
+    <ClInclude Include="wren\src\optional\wren_opt_meta.h" />
+    <ClInclude Include="wren\src\optional\wren_opt_random.h" />
+    <ClInclude Include="wren\src\vm\wren_common.h" />
+    <ClInclude Include="wren\src\vm\wren_compiler.h" />
+    <ClInclude Include="wren\src\vm\wren_core.h" />
+    <ClInclude Include="wren\src\vm\wren_debug.h" />
+    <ClInclude Include="wren\src\vm\wren_opcodes.h" />
+    <ClInclude Include="wren\src\vm\wren_primitive.h" />
+    <ClInclude Include="wren\src\vm\wren_utils.h" />
+    <ClInclude Include="wren\src\vm\wren_value.h" />
+    <ClInclude Include="wren\src\vm\wren_vm.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
+    <None Include="cpp.hint" />
+    <None Include="Debug\init.cfgt" />
     <None Include="README.md" />
+    <None Include="resources\data\assets.cfgt" />
+    <None Include="resources\data\celestial_bodies.cfgt" />
+    <None Include="resources\data\settings.cfgt" />
+    <None Include="resources\data\test.cfgt" />
+    <None Include="resources\scripts\console.wren" />
+    <None Include="resources\scripts\include.cfgt" />
+    <None Include="resources\shaders\CircleFrag.fshad" />
+    <None Include="resources\shaders\CircleVert.vshad" />
+    <None Include="resources\shaders\CircleVert_Legacy.vshad" />
+    <None Include="resources\shaders\Direct.vshad" />
+    <None Include="resources\shaders\Dither.fshad" />
+    <None Include="resources\shaders\EllipsisVert.vshad" />
+    <None Include="resources\shaders\PostFrag.fshad" />
+    <None Include="resources\shaders\SimpleFrag.fshad" />
+    <None Include="resources\shaders\SimpleVert.vshad" />
+    <None Include="resources\shaders\TextFragment.fshad" />
+    <None Include="resources\shaders\TextVertex.vshad" />
+    <None Include="resources\shaders\UI.vshad" />
+    <None Include="wren\src\vm\wren_core.wren.inc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Debug\boot.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

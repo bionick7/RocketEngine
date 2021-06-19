@@ -23,7 +23,7 @@ Drawing::Drawing(float args[], int len) {
 GLuint shader, matrix_ID, color_ID;
 
 void draw_drawing(Drawing* drawing, Screenpos start, pixel width, pixel height) {
-	shader = ((Shader*)assets->get(io::ResourceType::SHADER, "Simple"))->ID;
+	shader = (assets->get<Shader>(io::ResourceType::SHADER, "Simple"))->ID;
 	matrix_ID = glGetUniformLocation(shader, "VP");
 	color_ID = glGetUniformLocation(shader, "Color");
 

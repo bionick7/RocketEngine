@@ -1,5 +1,4 @@
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#pragma once
 
 #include "../data_input/reader.h"
 
@@ -10,6 +9,8 @@
 #define SET_ENGLISH			0x01
 #define SET_ESPERANTO		0x02
 // ...
+
+#define RENDER_FLAGS_POST_PROCESSING 0x01
 
 const char volume_array_size = 2;
 const char languages_num = 3;
@@ -23,11 +24,11 @@ struct Color {
 	float r, g, b, a;
 };
 
-Color get_color(io::DataStructure*, std::string);
+Color get_color(io::DataStructurePtr, std::string);
 
 class Settings {
 public:
-	Settings(io::DataStructure*);
+	Settings();
 	Color background;
 	Color draw;
 	int line_thickness;
@@ -41,8 +42,11 @@ public:
 	double min_vertical_angle;
 	double scroll_sensitivity;
 
-	float get_volume(char);
-	void change_language_to(char);
+	long render_flags;
+
+	float get_volume(int);
+	void change_language_to(int);
+	void reload(io::DataStructurePtr);
 
 	std::string get_text_for(std::string);
 
@@ -50,10 +54,8 @@ private:
 	
 	//std::map<std::string, std::string> translations = std::map<std::string, std::string>();
 
-	io::DataStructure* translation_pointers[languages_num];
-	float volumes[volume_array_size];
+	std::vector<io::DataStructurePtr> translation_pointers = std::vector<io::DataStructurePtr>(languages_num);
+	std::vector<float> volumes = std::vector<float>(volume_array_size);
 };
 
 extern Settings* settings;
-
-#endif // !SETTINGS_H

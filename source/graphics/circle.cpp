@@ -15,19 +15,21 @@ Circle::Circle(double rad)
 	// Create a vertex array
 
 	// Get the vertex buffer from function below
-	vertex_buffer = get_quad_buffer(.5f);
+	vertex_buffer = get_quad_buffer(1);
 
 	// initialize shader
-	shader = ((Shader*)assets->get(io::ResourceType::SHADER, "Circle"))->ID;
+	shader = (assets->get<Shader>(io::ResourceType::SHADER, "Circle"))->ID;
+	//shader = ((Shader*)assets->get(io::ResourceType::SHADER, "Simple"))->ID;
 
-	viewmatrix_ID = glGetUniformLocation(shader, "ViewMatrix");
-	projectionmatrix_ID = glGetUniformLocation(shader, "ProjectionMatrix");
+	vp_ID = glGetUniformLocation(shader, "VP");
 	transform_ID = glGetUniformLocation(shader, "Transform");
-	color_ID = glGetUniformLocation(shader, "Color");
-	backgroundcolor_ID = glGetUniformLocation(shader, "BGColor");
+
 	thickness_ID = glGetUniformLocation(shader, "Edge");
 	edge_ID = glGetUniformLocation(shader, "Space");
 	screenwith_ID = glGetUniformLocation(shader, "ScreenWidth");
+	radius_ID = glGetUniformLocation(shader, "Radius");
+	camera_pos_ID = glGetUniformLocation(shader, "CameraPos");
+	camera_dir_ID = glGetUniformLocation(shader, "CameraDir");
 
 	radius = rad;
 }
@@ -44,31 +46,44 @@ void Circle::draw(const Camera* camera, glm::mat4 transform) {
 	if (!visible) {
 		return;
 	}
-	// Get circle matrix form below
-	// set shader
 
-	transform = glm::scale(transform, glm::vec3(radius));
+	LongVector world_position = LongVector(glm::vec3(transform[3]));  // Loss of precision, but eh
+	LongVector center_to_camera = (LongVector)camera->world_position - world_position;  // In world space
+	double camera_distance = longvec_magnitude(center_to_camera);
+	LongVector center_to_camera_normalized = center_to_camera / camera_distance;
 
-	/*
-	glm::vec4 mid_point = camera->view_matrix * glm::vec4(glm::vec3(transform[3]), 1);
-	glm::mat4 transform_base = transform;
-	transform_base[3].x = 0;
-	transform_base[3].y = 0;
-	transform_base[3].z = 0;
-	glm::mat4 billboard_transform = glm::translate(glm::mat4(1), glm::vec3(mid_point));
-	glm::mat4 final_matrix = camera->projection_matrix * billboard_transform * transform_base;
-	*/
+	LongVector v = LongVector(0.0, 1.0, 0.0);  // Chosen arbitrarily
+	if (std::abs(longvec_dot(v, center_to_camera_normalized)) > 0.9) {	 // Not risking linear dependance
+		v = LongVector(1.0, 0.0, 0.0);
+	}
 
+	v = (v - center_to_camera_normalized * longvec_dot(v, center_to_camera_normalized)).normalized();  // Project on plane to get orthogonal vector
+
+	LongMatrix3x3 new_model_matrix_basis = LongMatrix3x3(
+		-longvec_cross(v, center_to_camera_normalized),
+		v,
+		center_to_camera_normalized
+	);  // Orthonormal and x-y plane is orthogonal to planet-canera vector
+
+	double offset = radius * radius / camera_distance;  // Offset from midpoint to plane in render-world coordinate system
+	double h = std::sqrt(radius * radius - offset * offset);  // plane scale in render-world coordinate system
+
+	glm::mat4 new_model_matrix = LongMatrix4x4(new_model_matrix_basis).to_float_mat();	// Model to view such that model faces you
+
+	new_model_matrix *= h;
+	new_model_matrix[3] = transform[3] + glm::vec4((center_to_camera_normalized * offset).to_float_vec(), 0);
+
+	// Set parameters
 	glUseProgram(shader);
-	glUniform3f(color_ID, settings->draw.r, settings->draw.g, settings->draw.b);
-	glUniform3f(backgroundcolor_ID, settings->background.r, settings->background.g, settings->background.b);
 	glUniform1f(edge_ID, settings->line_thickness);
 	glUniform1f(thickness_ID, settings->line_thickness);
 	glUniform1f(screenwith_ID, settings->width);
-	glUniformMatrix4fv(projectionmatrix_ID, 1, GL_FALSE, &camera->projection_matrix[0][0]);
-	glUniformMatrix4fv(viewmatrix_ID, 1, GL_FALSE, &camera->view_matrix[0][0]);
-	glUniformMatrix4fv(transform_ID, 1, GL_FALSE, &transform[0][0]);
-
+	glUniform1f(radius_ID, radius);
+	glUniform3f(camera_pos_ID, camera->world_position.x, camera->world_position.y, camera->world_position.z);
+	glUniform3f(camera_dir_ID, camera->direction.x, camera->direction.y, camera->direction.z);
+	glUniform3f(glGetUniformLocation(shader, "Normal"), center_to_camera_normalized.x, center_to_camera_normalized.y, center_to_camera_normalized.z);
+	glUniformMatrix4fv(vp_ID, 1, GL_FALSE, &camera->vp_matrix[0][0]);
+	glUniformMatrix4fv(transform_ID, 1, GL_FALSE, &new_model_matrix[0][0]);
 
 	// Draw the shape
 	glEnableVertexAttribArray(0);
@@ -78,8 +93,38 @@ void Circle::draw(const Camera* camera, glm::mat4 transform) {
 	glDisableVertexAttribArray(0);
 }
 
+glm::mat4 Circle::get_adjusted_transform(LongVector camera_position, glm::mat4 transform) {
+	LongVector world_position = LongVector(glm::vec3(transform[3]));  // Loss of precision, but eh
+	LongVector center_to_camera = camera_position - world_position;  // In world space
+	double camera_distance = longvec_magnitude(center_to_camera);
+	LongVector center_to_camera_normalized = center_to_camera / camera_distance;
+
+	LongVector v = LongVector(0.0, 1.0, 0.0);  // Chosen arbitrarily
+	if (std::abs(longvec_dot(v, center_to_camera_normalized)) > 0.9) {	 // Not risking linear dependance
+		v = LongVector(1.0, 0.0, 0.0);
+	}
+
+	v = (v - center_to_camera_normalized * longvec_dot(v, center_to_camera_normalized)).normalized();  // Project on plane to get orthogonal vector
+
+	LongMatrix3x3 new_model_matrix_basis = LongMatrix3x3(
+		-longvec_cross(v, center_to_camera_normalized),
+		v,
+		center_to_camera_normalized
+	);  // Orthonormal and x-y plane is orthogonal to planet-canera vector
+
+	double offset = radius * radius / camera_distance;  // Offset from midpoint to plane in render-world coordinate system
+	double h = std::sqrt(radius * radius - offset * offset);  // plane scale in render-world coordinate system
+
+	glm::mat4 new_model_matrix = LongMatrix4x4(new_model_matrix_basis).to_float_mat();	// Model to view such that model faces you
+
+	new_model_matrix *= h;
+	new_model_matrix[3] = transform[3] + glm::vec4((center_to_camera_normalized * offset).to_float_vec(), 0);
+
+	return new_model_matrix;
+}
+
 signed char Circle::draw_order() {
-	return 1;
+	return -1;
 }
 
 /*

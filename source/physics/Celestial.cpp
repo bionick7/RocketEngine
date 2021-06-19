@@ -1,11 +1,9 @@
 #include "Celestial.h"
-#include "space_ship.h"
-#include "mesh.h"
 
 point_array_t get_equator_points(float radius) {
 	point_array_t res = point_array_t();
 	for (double i = 0.0; i <= 100.0; i++) {
-		res.push_back(0.5f * radius * glm::vec3(sin(i / 50.0 * pi_), 0, cos(i / 50.0 * pi_)));
+		res.push_back(radius * glm::vec3(sin(i / 50.0 * pi_), 0, cos(i / 50.0 * pi_)));
 	}
 	return res;
 }
@@ -13,15 +11,24 @@ point_array_t get_equator_points(float radius) {
 point_array_t get_polar_points(float radius) {
 	point_array_t res = point_array_t();
 	for (double i = 0.0; i <= 100.0; i++) {
-		res.push_back(0.5f * radius * glm::vec3(0, cos(i / 50.0 * pi_), sin(i / 50.0 * pi_)));
+		res.push_back(radius * glm::vec3(0, cos(i / 50.0 * pi_), sin(i / 50.0 * pi_)));
 	}
 	for (double i = 0.0; i <= 100.0; i++) {
-		res.push_back(0.5f * radius * glm::vec3(sin(i / 50.0 * pi_), cos(i / 50.0 * pi_), 0));
+		res.push_back(radius * glm::vec3(sin(i / 50.0 * pi_), cos(i / 50.0 * pi_), 0));
 	}
 	return res;
 }
 
-Celestial::Celestial(io::DataStructure* data, Orbiter* parent_ptx) : Orbiter::Orbiter(data, parent_ptx) {
+Celestial::Celestial() : Orbiter::Orbiter() {
+
+}
+
+
+Celestial::Celestial(io::DataStructurePtr data, Orbiter* parent_ptx) : Orbiter::Orbiter(data, parent_ptx) {
+	setup(data, parent_ptx);
+}
+
+void Celestial::setup(io::DataStructurePtr data, Orbiter* parent_ptx) {
 
 	radius = data->get_double("radius");
 	tilt = data->get_double("tilt");
@@ -40,43 +47,21 @@ Celestial::Celestial(io::DataStructure* data, Orbiter* parent_ptx) : Orbiter::Or
 	add_shape(equator);
 	add_shape(polar_rings);
 
-	// One time test
-
-	if (name == "Saturn") {/*
-		Circle* m1 = new Circle(1);
-		m1->render_layers = 2;
-		add_shape(m1);
-		Circle* km1 = new Circle(1000);
-		km1->render_layers = 2;
-		add_shape(km1);
-		Circle* Mm1 = new Circle(1000000);
-		Mm1->render_layers = 2;
-		add_shape(Mm1);*/
-
-		//Mesh* test_mesh = new Mesh((MeshResource*)assets->get(io::ResourceType::MESH, "Wire Monke"));
-		//test_mesh->render_layers = 1;
-		//test_mesh->source = (MeshResource*)assets->get(io::ResourceType::MESH, "Wire Monke");
-		//test_mesh->apply();
-
-		//add_shape(test_mesh);
-		//add_shape(test_mesh);
-
-		//test_mesh->source->store_in_file("E:\\Programing\\C++\\RocketEngine2\\resources\\objects\\test_wireframe_2.obj");
-	}
-
-	// end test
-
-
-	for (io::DataStructure* ds : data->get_all_children()) {
+	for (io::DataStructurePtr ds : data->get_all_children()) {
 		int orbiter_type = ds->get_int("type", 0, true);
 		if (orbiter_type == 0) {
 			add_sattelite(new Celestial(ds, this));
-		} else if (orbiter_type == 1) {
+		}
+		else if (orbiter_type == 1) {
 			add_sattelite(new RingSystem(ds, this));
-		} else if (orbiter_type == 2) {
+		}
+		else if (orbiter_type == 2) {
 			add_sattelite(new SpaceShip(ds, this));
 		}
 	}
+
+	bind_advanced_variable(&surface_transform, "surface_transform", "linear_algebra", "Transform", sizeof(LongMatrix4x4));
+	BIND(radius)
 }
 
 double Celestial::Mu() { return G * mass; }
@@ -92,23 +77,27 @@ void Celestial::orbiter_step(double dt , agent_id from) {
 
 void Celestial::draw_step(double delta_t) {
 	Orbiter::draw_step(delta_t);
-	update_drawmode(global_blackboard->main_camera->large_scale);
+	update_drawmode(scene_manager->main_camera->large_scale);
 
-	glm::mat4 rotation_matrix = get_focus_transformation() * glm::rotate(glm::mat4(1), (float)(global_blackboard->time * rotational_speed), glm::vec3(0, 1, 0));
+	// Maybe avoid using focus transform as planet orientation; It can be overridden!
+	LongVector rotation_axis = get_focus_transformation().mul(LongVector(0.0, 1.0, 0.0), 0);
+	surface_transform = get_focus_transformation() * glm::rotate(glm::mat4(1), (float)(scene_manager->time * rotational_speed), rotation_axis.to_float_vec()); // Implement using LMatrix
 
-	equator->shape_transform = rotation_matrix;
-	polar_rings->shape_transform = rotation_matrix;
+	equator->shape_transform = surface_transform.to_float_mat();
+	polar_rings->shape_transform = surface_transform.to_float_mat();
 }
 
-glm::mat4 Celestial::get_focus_transformation() {
+LongMatrix4x4 Celestial::get_focus_transformation() { // Implement using LMatrix
 	if (parent.is_valid)
-		return parent.ptx->get_focus_transformation() * glm::rotate(glm::mat4(1), (float)(tilt * deg2rad), glm::vec3(1, 0, 0));
+		return parent.ptx->get_focus_transformation() * glm::rotate(glm::mat4(1), (float)(tilt * deg2rad), glm::vec3(1, 0, 0));  
+	// rotated tilt° over x fixed x is a mistake
+	// TODO: find data over exact planet rotation (detail)
 	return glm::rotate(glm::mat4(1), (float)(tilt * deg2rad), glm::vec3(1, 0, 0));
 }
 
 unsigned Celestial::add_sattelite(Orbiter* sattelite) {
 	sattelites.push_back(sattelite);
-	children.push_back(std::unique_ptr<Orbiter>(sattelite));
+	add_child(sattelite);
 	return sattelites_num++;
 }
 
@@ -119,8 +108,8 @@ Orbiter* const Celestial::get_sattelite(unsigned position) {
 	return sattelites[position];
 }
 
-void Celestial::update_drawmode(Camera c) {
-	float tan = radius * position_scale * radius_enlarger / glm::distance(glm::vec3(c.view_matrix[3]), meta_position);
+void Celestial::update_drawmode(Camera* c) {
+	float tan = radius * position_scale * radius_enlarger / glm::distance(glm::vec3(c->view_matrix[3]), meta_position);
 	//if (name == "Sun") std::cout << tan << std::endl;
 	if (tan < .004) {
 		draw_mode = DrawMode::Far;
@@ -137,6 +126,10 @@ void Celestial::update_drawmode(Camera c) {
 	polar_rings->visible =	draw_mode == DrawMode::CloseUp;
 }
 
-Type Celestial::get_type() {
-	return Type::CELESTIAL;
+AgentType const Celestial::get_type() {
+	return AgentType::CELESTIAL;
+}
+
+bool const Celestial::is_instance_of(AgentType other) {
+	return Orbiter::is_instance_of(other) || other == get_type();
 }

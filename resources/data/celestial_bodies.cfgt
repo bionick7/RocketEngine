@@ -68,6 +68,21 @@
 		
 		int pos = 30
 		
+		>SpaceShip3
+			f64 Ecc = 0
+			f64 SMA = 6 771 000 // 400 km
+			f64 Inc = 27.3
+			f64 LoA = -1.5
+			f64 AoP = 0.5
+			f64 Ann = 0.0
+			
+			int type = ORBITER_TYPE/ARTIFICIAL
+			
+			>Visual
+				chr mesh = Big_Ship
+			<
+		<
+		
 		>Moon
 			f64 Ecc = 0.05
 			f64 SMA = 384 000 000
@@ -115,20 +130,20 @@
 			
 			int pos = 60
 			
-			>SpaceShip2
-				f64 Ecc = 0
-				f64 SMA = 6 000
-				f64 Inc = 0
-				f64 LoA = 0.0
-				f64 AoP = 0.0
-				f64 Ann = 0.0
-				
-				int type = ORBITER_TYPE/ARTIFICIAL
-				
-				>Visual
-					chr mesh = Big_Ship
-				<
-			<
+			//>SpaceShip2
+			//	f64 Ecc = 0
+			//	f64 SMA = 6 000
+			//	f64 Inc = 0
+			//	f64 LoA = 0.0
+			//	f64 AoP = 0.0
+			//	f64 Ann = 0.0
+			//	
+			//	int type = ORBITER_TYPE/ARTIFICIAL
+			//	
+			//	>Visual
+			//		chr mesh = Big_Ship
+			//	<
+			//<
 		<
 		
 		>Deimos
@@ -300,21 +315,6 @@
 			f64 day_length = 86 400 // TBD
 			
 			int pos = 160
-
-			>SpaceShip3
-				f64 Ecc = .9
-				f64 SMA = 3 000 000
-				f64 Inc = 56
-				f64 LoA = 1.0
-				f64 AoP = 0.5
-				f64 Ann = 0.0
-				
-				int type = ORBITER_TYPE/ARTIFICIAL
-				
-				>Visual
-					chr mesh = Big_Ship
-				<
-			<
 		<
 		
 		>Rhea

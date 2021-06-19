@@ -1,10 +1,10 @@
 #include "lineset.h"
 
 LineSet::LineSet() {
-	shader = ((Shader*)assets->get(io::ResourceType::SHADER, "Simple"))->ID;
+	shader = (assets->get<Shader>(io::ResourceType::SHADER, "Simple"))->ID;
 
 	vp_matrix_ID = glGetUniformLocation(shader, "VP");
-	color_ID = glGetUniformLocation(shader, "Color");
+	active_ID = glGetUniformLocation(shader, "_Active");
 
 	glGenBuffers(1, &vertex_buffer);
 	glGenVertexArrays(1, &array_id);
@@ -12,6 +12,7 @@ LineSet::LineSet() {
 
 LineSet::~LineSet() {
 	glDeleteBuffers(1, &vertex_buffer);
+	glDeleteVertexArrays(1, &array_id);
 }
 
 void LineSet::update(linearray_t value) {
@@ -40,7 +41,7 @@ void LineSet::draw(const Camera* camera, glm::mat4 transform) {
 
 	glUseProgram(shader);
 	glUniformMatrix4fv(vp_matrix_ID, 1, GL_FALSE, &transform_matrix[0][0]);
-	glUniform3f(color_ID, settings->draw.r, settings->draw.g, settings->draw.b);
+	glUniform1f(active_ID, 1.0);
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);

@@ -2,11 +2,11 @@
 
 
 Polygone::Polygone(LineType plinetype) {
-	shader = ((Shader*)assets->get(io::ResourceType::SHADER, "Simple"))->ID;
+	shader = (assets->get<Shader>(io::ResourceType::SHADER, "Simple"))->ID;
 	line_type = plinetype;
 
 	vp_matrix_ID = glGetUniformLocation(shader, "VP");
-	color_ID = glGetUniformLocation(shader, "Color");
+	active_ID = glGetUniformLocation(shader, "_Active");
 
 	glGenBuffers(1, &vertex_buffer);
 }
@@ -37,7 +37,7 @@ void Polygone::draw(const Camera* camera, glm::mat4 transform) {
 
 	glUseProgram(shader);
 	glUniformMatrix4fv(vp_matrix_ID, 1, GL_FALSE, &transform_matrix[0][0]);
-	glUniform3f(color_ID, settings->draw.r, settings->draw.g, settings->draw.b);
+	glUniform1f(active_ID, 1.0);
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);

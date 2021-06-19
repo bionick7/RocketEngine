@@ -1,30 +1,36 @@
 #version 330 core
 
 in vec2 uv;
-in vec4 gl_FragCoord;
-in float pixel_size;
+in vec3 world_pos;
 
 uniform float Edge;
 uniform float Space;
-uniform vec3 Color;
-uniform vec3 BGColor;
+uniform float Radius;
+uniform float ScreenWidth;
 
-out vec3 color;
+uniform vec3 CameraPos;  // in world_pos
+uniform vec3 CameraDir;
+uniform vec3 Normal;
+
+layout(location = 0) out vec3 color;
 
 void main(){
-	float draw_max = 0.5;
-	float draw_min = 0.5 - 2 * Edge/pixel_size - Space/pixel_size;
+	vec3 cam_pos = CameraPos - world_pos;
+	float cam_dist = length(cam_pos);
+	float horizon_angle = acos(dot(-cam_pos / cam_dist, Normal)) - 3.141592 / 2.0;  // both normalized
+	float duv_dclip = cam_dist / (Radius  * sin(horizon_angle) * sin(horizon_angle));
+	float delta = duv_dclip * 1 / ScreenWidth;
 
-	float vis_max = 0.5 - Edge/pixel_size;
-	float vis_min = 0.5 - Edge/pixel_size - Space/pixel_size;
+	float draw_max = 1;
 
-	if(dot(uv, uv) > draw_max*draw_max || dot(uv, uv) < draw_min*draw_min){
+	float vis_max = 1 - Edge * delta;
+	float vis_min = vis_max - Space * delta;
+
+	float r = dot(uv, uv);
+	
+	if(r > draw_max*draw_max){
 		discard;
 	}
 
-	if(dot(uv, uv) < vis_max*vis_max || dot(uv, uv) > vis_min*vis_min){
-		color = Color;
-	} else {
-		color = BGColor;
-	}
+	color = vec3(step(r, vis_max*vis_max) * step(vis_min*vis_min, r), 0, 0);
 }

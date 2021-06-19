@@ -1,6 +1,8 @@
 #pragma once
 #include "ui_element.h"
 
+// TODO: Use Arrays instead of vectors
+
 class Graph:
 	public UIElement {
 public:

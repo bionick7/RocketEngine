@@ -3,37 +3,11 @@
 using namespace std;
 
 namespace io {
-
 	string base_dir = "";
-	DataStructure* error_ds = nullptr;
-
-	void replace_character(string* reference_string, char char_1, char char_2) {
-		string temp_str = *reference_string;
-		for (unsigned i = 0; i < reference_string->size(); i++) {
-			if (temp_str[i] == char_1) {
-				temp_str[i] = char_2;
-			}
-		}
-		*reference_string = temp_str;
-	}
-
-	void purge_char(string* reference_string, char char_1) {
-		unsigned size = reference_string->size();
-		for (unsigned i = 0; i < size; i++) {
-			if ((*reference_string)[i] == char_1) {
-				reference_string->erase(reference_string->begin() + i, reference_string->begin() + i + 1);
-				size--;
-				i--;
-			}
-		}
-	}
-
-	bool contains(string inp, string match) {
-		return inp.find(match) != -1;
-	}
+	DataStructurePtr error_ds = nullptr;
 
 	bool initialize(int arguments_num, char** command_args) {
-		error_ds = new DataStructure("fail", nullptr, "/");
+		error_ds = make_shared<DataStructure>("fail", nullptr, "/");
 
 		char basepath[255] = "";
 		_fullpath(basepath, command_args[0], sizeof(basepath));
@@ -69,8 +43,7 @@ namespace io {
 		ifstream file(filename, ios::in);
 		*success_ptx = file.is_open();
 		if (*success_ptx) {
-			while (std::getline(file, line))
-			{
+			while (std::getline(file, line)) {
 				all_lines.push_back(line);
 			}
 			file.close();
@@ -78,7 +51,27 @@ namespace io {
 		return all_lines;
 	}
 
-	DataStructure* read_file(string filename, string base, string ds_name, DataStructure* parent, bool full_path) {
+	std::string read_lines_from_file_raw(string full_path, bool* success_ptx, int* size) {
+		std::string res = "";
+
+		//std::cout << "Reading: " << filename << std::endl;
+		ifstream file(full_path, ios::in);
+		*success_ptx = file.is_open();
+		if (*success_ptx) {
+			res = std::string(
+				std::istreambuf_iterator<char>(file),
+				std::istreambuf_iterator<char>()
+			);
+			file.seekg(0, ios::end);
+			*size = file.tellg();
+			file.seekg(0, ios::beg);
+			file.close();
+		}
+		*success_ptx &= *size > 0;
+		return res;
+	}
+
+	DataStructurePtr read_file(string filename, string base, string ds_name, DataStructurePtr parent, bool full_path) {
 		bool success_ptx;
 		auto text = read_lines_from_file(filename, base, &success_ptx, full_path);
 		if (success_ptx) {
@@ -93,7 +86,7 @@ namespace io {
 		}
 	}
 
-	DataStructure* analyze_text(vector<string> text_lines, string name, DataStructure* parent, string path) {
+	DataStructurePtr analyze_text(vector<string> text_lines, string name, DataStructurePtr parent, string path) {
 		int txt_size = text_lines.size();
 
 		const string placeholder(1, 0xd1);
@@ -147,15 +140,19 @@ namespace io {
 			}
 		}
 
-		DataStructure *res = analyze_structure(act_lines, name, parent, path);
+		DataStructurePtr res = analyze_structure(act_lines, name, parent, path);
 		return res;
 	}
 
-	DataStructure* analyze_structure(vector<string> text_lines, string name, DataStructure* parent, string path) {
+	DataStructurePtr analyze_structure(vector<string> text_lines, string name, DataStructurePtr parent, string path) {
+		std::string _debug_parent_name = parent == nullptr ? "NONE" : parent->get_name();
 #define ERR_PRINT(msg) \
-		std::cerr << "an error occured while reading " << parent->get_name() << " > " << name << " in \"" << path << "\" around line" << current_line << ": " << msg << std::endl;
+		std::cerr << "an error occured while reading " << _debug_parent_name << " > " << name << " in \"" << path << "\" around line" << current_line << ": " << msg << std::endl;
 		//For each command, do this:
-		DataStructure* res = new DataStructure(name, parent, path);
+		DataStructurePtr res = make_shared<DataStructure>(name, parent, path);
+		if (parent != nullptr) {
+			parent->set_child(res->get_name(), res);
+		}
 		unsigned current_line = 0;
 		bool still_running = true;
 		unsigned counter = 0u;
@@ -201,7 +198,7 @@ namespace io {
 					_lines_.push_back(text_lines[current_line]);
 				}
 				if (raw_name == "ENUM") {
-					DataStructure* temp = analyze_structure(_lines_, ch_name, nullptr, path);
+					DataStructurePtr temp = analyze_structure(_lines_, ch_name, nullptr, path);
 					res->active_enums.push_back({
 						temp->get_string("name"),
 						temp->get_string_arr("values")
@@ -292,10 +289,10 @@ namespace io {
 					break;
 				}
 				else if (indicator_type == "dat") {
-					vector<DataStructure*> temp_arr = vector<DataStructure*>(count);
+					vector<DataStructurePtr> temp_arr = vector<DataStructurePtr>(count);
 					for (int j = 0; j < count; j++) {
 						string f_path = parse_file_path(parse_string(content[j]), res->directory_path);
-						temp_arr[j] = read_file(f_path, f_path, item_name, res, true);
+						temp_arr[j] = read_file(f_path, f_path, item_name + "_" + std::to_string(j), res, true);
 					}
 					res->set_child_arr(item_name, temp_arr);
 				}

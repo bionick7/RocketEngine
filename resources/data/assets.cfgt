@@ -1,10 +1,11 @@
 >ENUM
 	chr name = RESOURCE_TYPE
-	chr*4-values = 
+	chr*5-values = 
 		NONE
 		MESH
 		FONT
 		SHADER
+		AUDIO
 <
 
 >Shaders
@@ -18,6 +19,32 @@
 		chr vertex_path = \P \<shaders/SimpleVert.vshad
 		chr fragment_path = \P \<shaders/SimpleFrag.fshad
 	<
+	>UI
+		chr vertex_path = \P \<shaders/UI.vshad
+		chr fragment_path = \P \<shaders/SimpleFrag.fshad
+	<
+	>PostProcess
+		chr vertex_path = \P \<shaders/Direct.vshad
+		chr fragment_path = \P \<shaders/PostFrag.fshad
+	<
+	>Ellipsis
+		chr vertex_path = \P \<shaders/EllipsisVert.vshad
+		chr fragment_path = \P \<shaders/Dither.fshad
+	<
+<
+
+//>AudioShaders
+//<
+
+>AudioResources
+	int type = RESOURCE_TYPE/AUDIO
+	chr def = Noise
+	>Noise
+		chr path = \P \<audio/default_noise.wav
+	<
+	>KeyStroke
+		chr path = \P \<audio/key.wav
+	<
 <
 
 >Fonts
@@ -25,10 +52,14 @@
 	chr def = Default
 	>Default
 		chr path = \P \<fonts/def.vecfont
+		//chr path = \P \<fonts/fallback.vecfont
+		f64 size = 12
+		f64 ratio = 1.333
+		f64 x_spacing = 0
+		f64 y_spacing = 6
 	<
 <
 
-// Testing
 >Meshes
 	int type = RESOURCE_TYPE/MESH
 	chr def = Wire_Monke

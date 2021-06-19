@@ -10,7 +10,8 @@ class MeshResource: public io::Resource
 friend class Mesh;
 public:
 	MeshResource();
-	MeshResource(io::DataStructure*);
+	MeshResource(io::DataStructurePtr);
+	~MeshResource();
 
 	bool deserialize(std::istream*, int) override;
 	bool serialize(std::ostream*, int*) override;

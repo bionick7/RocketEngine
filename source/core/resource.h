@@ -2,21 +2,36 @@
 #include "data_input/data_structure.h"
 
 namespace io {
+	int parse_binary_to_int(char* buffer, int len, bool little_endian, int offset=0);
 
 	enum class ResourceType
 	{
 		NONE,	// 0
 		MESH,
 		FONT,
-		SHADER
+		SHADER,
+		AUDIO
 	};
 
-	constexpr int RESOURCE_TYPE_COUNT = 4;
+	constexpr int RESOURCE_TYPE_COUNT = 5;
+
+	enum class ResourceNoteSeverity
+	{
+		NOTE,
+		WARNING,
+		ERROR,
+		CRITICAL_ERROR
+	};
+
+	struct ResourceLoadingNote {
+		ResourceNoteSeverity severity = ResourceNoteSeverity::NOTE;
+		std::string message = "";
+	};
 
 	class Resource abstract {
 	public:
 		Resource();
-		Resource(DataStructure*);
+		Resource(DataStructurePtr);
 		~Resource();
 
 		bool read_from_file(std::string);
@@ -31,5 +46,13 @@ namespace io {
 
 		std::string file_path;
 		std::string name;
+
+		bool is_binary = false;
+
+		void log_note(std::string, ResourceNoteSeverity = ResourceNoteSeverity::WARNING);
+
+		std::vector<ResourceLoadingNote> notes = std::vector<ResourceLoadingNote>();
 	};
+
+	typedef std::shared_ptr<Resource> ResourcePtr;
 }
